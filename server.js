@@ -70,6 +70,69 @@ app.get('/api/track/:trackingNumber', async (req, res) => {
   }
 });
 
+/* =========================================================
+   🔥 NEW ADMIN CREATE SHIPMENT ENDPOINT (ADDED ONLY)
+   ========================================================= */
+
+app.post('/api/admin/create-shipment', async (req, res) => {
+
+  const {
+    senderName,
+    senderAddress,
+    senderPhone,
+    senderEmail,
+    receiverName,
+    receiverAddress,
+    receiverPhone,
+    receiverEmail,
+    origin,
+    destination,
+    shipmentName,
+    weight,
+    itemsSent,
+    boxCount,
+    sentDate,
+    estimatedDelivery,
+    remarks
+  } = req.body;
+
+  try {
+
+    // Generate tracking number
+    const trackingNumber = 'BR' + Date.now();
+
+    // Insert into shipments table
+    const shipmentInsert = await pool.query(
+      `INSERT INTO shipments 
+      (tracking_number, origin, destination, status, created_at, last_updated)
+      VALUES ($1, $2, $3, $4, NOW(), NOW())
+      RETURNING id`,
+      [trackingNumber, origin, destination, 'Shipment Created']
+    );
+
+    const shipmentId = shipmentInsert.rows[0].id;
+
+    // Insert first scan event
+    await pool.query(
+      `INSERT INTO scan_events (shipment_id, location, remark, scanned_at)
+       VALUES ($1, $2, $3, NOW())`,
+      [shipmentId, origin, 'Shipment Created']
+    );
+
+    res.json({
+      success: true,
+      trackingNumber
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create shipment'
+    });
+  }
+});
+
 // Start server (RAILWAY UPGRADE ONLY)
 const PORT = process.env.PORT || 3000;
 
