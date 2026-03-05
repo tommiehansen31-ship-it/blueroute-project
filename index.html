@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BlueRoute Express Delivery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div id="progress-bar"></div>
+
+<header>
+  <div class="container nav">
+    <div class="logo">BlueRoute Express</div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#tracking">Tracking</a>
+      <a href="#contact" class="btn">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-content">
+    <h1>Delivering Across Every Route</h1>
+    <p>Modern logistics solutions engineered for speed, safety, and reliability.</p>
+    <a href="#tracking" class="btn">Track Shipment</a>
+  </div>
+</section>
+
+<section class="trusted">
+  <div class="container">
+    <h2>Trusted By Industry Leaders</h2>
+    <div class="logo-row">
+      <img src="images/logos/logo1.svg">
+      <img src="images/logos/logo2.svg">
+      <img src="images/logos/logo3.svg">
+      <img src="images/logos/logo4.svg">
+    </div>
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="container">
+    <h2 class="section-title">Built on Experience</h2>
+
+    <div class="stats">
+      <div class="stat">
+        <h3 class="counter" data-target="12">0</h3>
+        <p>Years Experience</p>
+      </div>
+      <div class="stat">
+        <h3 class="counter" data-target="450">0</h3>
+        <p>Shipments Delivered (K+)</p>
+      </div>
+      <div class="stat">
+        <h3 class="counter" data-target="80">0</h3>
+        <p>Distribution Hubs</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="section gray">
+  <div class="container grid">
+
+    <div class="card service-card">
+      <img src="images/containers.jpg">
+      <h3>Freight Management</h3>
+      <p>Optimized cargo coordination across ports and inland hubs.</p>
+    </div>
+
+    <div class="card service-card">
+      <img src="images/warehouse.jpg">
+      <h3>Warehouse Logistics</h3>
+      <p>Secure storage and smart distribution systems.</p>
+    </div>
+
+    <div class="card service-card">
+      <img src="images/loadingdock.jpg">
+      <h3>Nationwide Delivery</h3>
+      <p>Reliable last-mile delivery across regions.</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="projects" class="section">
+  <div class="container gallery">
+    <img src="images/distribution.jpg">
+    <img src="images/packages.jpg">
+    <img src="images/storage.jpg">
+    <img src="images/warehouse1.jpg">
+  </div>
+</section>
+
+<section id="tracking" class="section gray">
+  <div class="container">
+    <h2>Track Your Shipment</h2>
+
+    <div class="tracking-box">
+      <input id="tracking-number" type="text" placeholder="Enter Tracking Number">
+      <button id="track-btn" class="btn">Track</button>
+    </div>
+
+    <div id="tracking-result"></div>
+  </div>
+</section>
+
+<!-- REQUEST A QUOTE -->
+<section id="quote" class="section gray">
+  <div class="container">
+    <h2>Request a Shipping Quote</h2>
+    <p style="margin-bottom:30px;color:#666;">
+      Tell us about your shipment and our logistics team will respond with a delivery plan.
+    </p>
+
+    <form id="quote-form" class="quote-form">
+
+      <div class="form-grid">
+        <input type="text" name="company" placeholder="Company Name" required>
+        <input type="text" name="contact" placeholder="Contact Person" required>
+        <input type="email" name="email" placeholder="Email Address" required>
+        <input type="text" name="phone" placeholder="Phone Number" required>
+
+        <input type="text" name="origin" placeholder="Origin City" required>
+        <input type="text" name="destination" placeholder="Destination City" required>
+
+        <input type="text" name="cargo" placeholder="Cargo Type (e.g. Electronics)" required>
+        <input type="text" name="weight" placeholder="Estimated Weight (kg)" required>
+      </div>
+
+      <textarea name="notes" rows="5" placeholder="Additional Shipment Details"></textarea>
+
+      <button type="submit" class="btn">Submit Quote Request</button>
+
+      <div id="quote-response" style="margin-top:20px;"></div>
+
+    </form>
+  </div>
+</section>
+
+<section id="contact" class="section">
+  <div class="container">
+    <h2>Contact Us</h2>
+    <p>Email: info@bluerouteexpress.com</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-bottom">
+    © 2026 BlueRoute Express Delivery. All Rights Reserved.
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

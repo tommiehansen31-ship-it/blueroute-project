@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Track Shipment - BlueRoute Express</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background:#f4f6f8;
+      padding:40px;
+    }
+
+    .container {
+      max-width:800px;
+      margin:auto;
+      background:white;
+      padding:25px;
+      border-radius:8px;
+      box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    input {
+      width:70%;
+      padding:12px;
+      border:1px solid #ccc;
+    }
+
+    button {
+      padding:12px 20px;
+      background:#007bff;
+      color:white;
+      border:none;
+      cursor:pointer;
+    }
+
+    .result-card {
+      margin-top:25px;
+      padding:20px;
+      border:1px solid #eee;
+      border-radius:8px;
+      background:#fafafa;
+    }
+
+    .status {
+      font-weight:bold;
+      color:#007bff;
+      margin-bottom:10px;
+    }
+
+    .timeline {
+      margin-top:20px;
+      border-left:3px solid #007bff;
+      padding-left:15px;
+    }
+
+    .timeline-entry {
+      margin-bottom:10px;
+    }
+
+    /* ======== NEW PROFESSIONAL TIMELINE UPGRADE (ADDED ONLY) ======== */
+
+    .timeline {
+      position: relative;
+      margin-top: 20px;
+      padding-left: 30px;
+      border-left: 2px solid #e5e7eb;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -10px;
+      top: 5px;
+      width: 14px;
+      height: 14px;
+      background: #9ca3af;
+      border-radius: 50%;
+    }
+
+    .timeline-item.active .timeline-dot {
+      background: #2563eb;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+    }
+
+    .timeline-content {
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .timeline-date {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .timeline-location {
+      font-size: 13px;
+      color: #374151;
+    }
+
+    /* ======== HORIZONTAL STATUS PROGRESS BAR (ADDED ONLY) ======== */
+
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 25px 0 35px 0;
+      position: relative;
+    }
+
+    .progress-container::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #e5e7eb;
+      z-index: 0;
+    }
+
+    .progress-step {
+      position: relative;
+      text-align: center;
+      flex: 1;
+      z-index: 1;
+    }
+
+    .progress-step .circle {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      background: #d1d5db;
+    }
+
+    .progress-step.completed .circle {
+      background: #10b981;
+    }
+
+    .progress-step.current .circle {
+      background: #2563eb;
+      box-shadow: 0 0 10px rgba(37,99,235,0.6);
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: #6b7280;
+      max-width: 90px;
+      margin: auto;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Track Your Shipment</h2>
+
+  <input id="trackingInput" placeholder="Enter Tracking Number">
+  <button onclick="trackShipment()">Track</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+
+/* ======== PRODUCTION API UPGRADE (ONLY CHANGE MADE) ======== */
+const SCRIPT_URL = "https://blueroute-api-production-aaef.up.railway.app/api/track/";
+
+function trackShipment() {
+
+  const tracking = document.getElementById("trackingInput").value;
+
+  fetch(`${SCRIPT_URL}${tracking}`)
+    .then(res => res.json())
+    .then(data => {
+
+      if (!data.found) {
+        document.getElementById("result").innerHTML =
+          "<p>Tracking number not found.</p>";
+        return;
+      }
+
+      /* ======== SQL RESPONSE MAPPING (ADDED ONLY — NOTHING REMOVED) ======== */
+
+      const shipment = data.shipment;
+      const scanHistory = data.scan_history.map(scan =>
+        `${scan.scanned_at} — ${scan.location} — ${scan.remark}`
+      ).join("\n");
+
+      const timelineHTML = renderTimeline(scanHistory);
+
+      document.getElementById("result").innerHTML = `
+        <div class="result-card">
+          <h3>${shipment.tracking_number}</h3>
+
+          <div class="status">${shipment.status}</div>
+          <div id="statusProgress"></div>
+
+          <p><strong>Origin:</strong> ${shipment.origin}</p>
+          <p><strong>Destination:</strong> ${shipment.destination}</p>
+          <p><strong>Last Updated:</strong> ${new Date(shipment.last_updated).toLocaleString()}</p>
+
+          <h4>Shipment History</h4>
+          <div class="timeline">
+            ${timelineHTML}
+          </div>
+        </div>
+      `;
+
+      document.getElementById("statusProgress").innerHTML =
+        renderProgress(shipment.status);
+
+    });
+}
+
+/* ======== NEW PROFESSIONAL TIMELINE FUNCTION (ADDED ONLY) ======== */
+
+function renderTimeline(scanHistory) {
+
+  if (!scanHistory) return "<p>No updates yet.</p>";
+
+  const scans = scanHistory.split("\n").reverse();
+
+  let html = "";
+
+  scans.forEach((scan, index) => {
+
+    const parts = scan.split(" — ");
+
+    const date = new Date(parts[0]).toLocaleString();
+    const location = parts[1] || "";
+    const remark = parts[2] || "";
+
+    const isLatest = index === 0;
+
+    html += `
+      <div class="timeline-item ${isLatest ? 'active' : ''}">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-header">
+            <strong>${remark}</strong>
+            <span class="timeline-date">${date}</span>
+          </div>
+          <div class="timeline-location">${location}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  return html;
+}
+
+/* ======== NEW PROGRESS BAR FUNCTION (ADDED ONLY) ======== */
+
+function renderProgress(currentStatus) {
+
+  const stages = [
+    "Shipment Created",
+    "Picked Up",
+    "In Transit",
+    "Out For Delivery",
+    "Delivered"
+  ];
+
+  let html = '<div class="progress-container">';
+
+  stages.forEach(stage => {
+
+    let className = "pending";
+
+    if (stage === currentStatus) className = "current";
+
+    if (stages.indexOf(stage) < stages.indexOf(currentStatus)) {
+      className = "completed";
+    }
+
+    html += `
+      <div class="progress-step ${className}">
+        <div class="circle"></div>
+        <div class="progress-label">${stage}</div>
+      </div>
+    `;
+  });
+
+  html += "</div>";
+
+  return html;
+}
+
+</script>
+
+</body>
+</html>
