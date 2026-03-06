@@ -338,6 +338,61 @@ app.get('/api/admin/waybill/:trackingNumber', async (req, res) => {
 // Start server (RAILWAY UPGRADE ONLY)
 const PORT = process.env.PORT || 3000;
 
+/* ============================================
+📦 CREATE SHIPMENT ENDPOINT
+Allows admin or system to create shipments
+============================================ */
+
+app.post('/api/shipments', async (req, res) => {
+  try {
+
+    const { tracking_number, origin, destination, status } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO shipments 
+       (tracking_number, origin, destination, status, last_updated)
+       VALUES ($1,$2,$3,$4,NOW())
+       RETURNING *`,
+      [tracking_number, origin, destination, status]
+    );
+
+    res.json(result.rows[0]);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: "Failed to create shipment"
+    });
+
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+// ===============================
+// CREATE SHIPMENT ENDPOINT
+// ===============================
+
+app.post('/api/shipments', async (req, res) => {
+  try {
+
+    const { tracking_number, origin, destination, status } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO shipments (tracking_number, origin, destination, status, last_updated)
+       VALUES ($1,$2,$3,$4,NOW())
+       RETURNING *`,
+      [tracking_number, origin, destination, status]
+    );
+
+    res.json(result.rows[0]);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create shipment" });
+  }
 });
