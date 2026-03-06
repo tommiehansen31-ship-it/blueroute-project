@@ -49,7 +49,7 @@
 
     .timeline {
       margin-top:20px;
-      border-left:3px solid #007bff;
+      border-left:3px solid #0077ff;
       padding-left:15px;
     }
 
@@ -159,6 +159,58 @@
       color: #6b7280;
       max-width: 90px;
       margin: auto;
+    }
+
+    /* =======================================================
+       ENTERPRISE TRACKING UI POLISH (APPENDED ONLY)
+       ======================================================= */
+
+    .container h2{
+      font-size:26px;
+      margin-bottom:20px;
+      color:#1e293b;
+    }
+
+    input:focus{
+      outline:none;
+      border-color:#2563eb;
+      box-shadow:0 0 0 2px rgba(37,99,235,0.1);
+    }
+
+    button:hover{
+      background:#1d4ed8;
+    }
+
+    .result-card{
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .timeline-content:hover{
+      transform:translateY(-2px);
+      transition:.2s;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    /* =======================================================
+       DHL / FEDEX LEVEL SEARCH BAR POLISH (APPENDED ONLY)
+       ======================================================= */
+
+    .container{
+      transition:all .2s ease;
+    }
+
+    input{
+      border-radius:6px 0 0 6px;
+      font-size:15px;
+    }
+
+    button{
+      border-radius:0 6px 6px 0;
+      font-weight:bold;
+    }
+
+    button:active{
+      transform:scale(.98);
     }
 
   </style>

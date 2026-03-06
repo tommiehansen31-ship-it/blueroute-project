@@ -508,3 +508,231 @@ outline:none;
 border-color:#0077ff;
 box-shadow:0 0 0 2px rgba(0,119,255,.08);
 }
+
+/* ===================================================== */
+/* ULTRA PROFESSIONAL RESPONSIVE NAV + MOBILE FIXES */
+/* (ADDED UPGRADE ONLY — ORIGINAL CODE NOT MODIFIED) */
+/* ===================================================== */
+
+.logo{
+font-size:22px;
+font-weight:700;
+color:#0077ff;
+cursor:pointer;
+}
+
+@media(max-width:768px){
+
+.nav{
+flex-direction:column;
+align-items:flex-start;
+gap:10px;
+}
+
+nav{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+}
+
+nav a{
+margin-left:0;
+}
+
+.section{
+padding:70px 0;
+}
+
+.hero{
+height:auto;
+padding:80px 0;
+text-align:center;
+}
+
+.hero h1{
+font-size:32px;
+}
+
+.hero p{
+font-size:16px;
+}
+
+.btn{
+width:100%;
+text-align:center;
+}
+
+.card img{
+height:160px;
+}
+
+}
+
+/* =====================================================
+   BLUEROUTE UI UPGRADE
+   (ADDED ONLY — NO EXISTING CODE MODIFIED)
+   ===================================================== */
+
+/* 1️⃣ REMOVE UNDERLINE UNDER BLUEROUTE EXPRESS LOGO */
+
+.logo,
+.logo a,
+header .logo{
+text-decoration:none !important;
+border-bottom:none !important;
+}
+
+
+/* =====================================================
+   2️⃣ ULTRA PROFESSIONAL FOOTER
+   ===================================================== */
+
+.footer-pro{
+background:#081a2d;
+color:white;
+padding:80px 0;
+margin-top:80px;
+}
+
+.footer-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:40px;
+}
+
+.footer-grid h4{
+margin-bottom:15px;
+font-size:16px;
+color:#4ea8ff;
+}
+
+.footer-grid p{
+font-size:14px;
+line-height:1.6;
+color:#d1d7e0;
+}
+
+.footer-grid a{
+display:block;
+margin-bottom:8px;
+font-size:14px;
+color:#d1d7e0;
+text-decoration:none;
+transition:.25s;
+}
+
+.footer-grid a:hover{
+color:#4ea8ff;
+transform:translateX(3px);
+}
+
+.footer-contact p{
+margin-bottom:6px;
+}
+
+
+/* =====================================================
+   3️⃣ MAKE PAGES LOOK FULLER / MORE ENTERPRISE
+   (Adds breathing space without changing layout)
+   ===================================================== */
+
+.section{
+padding-top:110px;
+padding-bottom:110px;
+}
+
+.card{
+padding:32px;
+}
+
+.grid{
+gap:30px;
+}
+
+.hero{
+min-height:560px;
+}
+
+
+/* =====================================================
+   4️⃣ ENTERPRISE VISUAL DEPTH
+   ===================================================== */
+
+.section:nth-child(even){
+background:#fafcff;
+}
+
+.card:hover{
+transform:translateY(-10px);
+box-shadow:0 25px 55px rgba(0,0,0,.12);
+}
+
+
+/* =====================================================
+   MOBILE FOOTER IMPROVEMENT
+   ===================================================== */
+
+@media(max-width:768px){
+
+.footer-grid{
+grid-template-columns:1fr;
+text-align:center;
+}
+
+.footer-grid a{
+margin-bottom:10px;
+}
+
+}
+
+/* =====================================================
+   ENTERPRISE POLISH PATCH
+   (APPENDED ONLY — NO EXISTING CODE TOUCHED)
+   ===================================================== */
+
+/* Force remove any possible underline on logo in any browser */
+header a,
+header a:hover,
+header a:focus{
+text-decoration:none !important;
+}
+
+/* Improve footer visual hierarchy slightly */
+.footer-pro{
+border-top:1px solid rgba(255,255,255,0.05);
+}
+
+/* Improve readability spacing on large screens */
+section{
+scroll-margin-top:80px;
+}
+
+/* Slight typography polish */
+h1,h2,h3{
+letter-spacing:0.2px;
+}
+
+/* HERO ENTERPRISE CONTENT UPGRADE */
+
+.hero-content p{
+max-width:720px;
+font-size:17px;
+line-height:1.7;
+margin-bottom:18px;
+}
+
+.hero-highlights{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:12px;
+margin:25px 0 35px;
+max-width:720px;
+}
+
+.hero-point{
+background:rgba(255,255,255,0.08);
+padding:10px 14px;
+border-radius:6px;
+font-size:14px;
+backdrop-filter:blur(4px);
+}

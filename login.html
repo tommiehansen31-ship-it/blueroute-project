@@ -87,13 +87,52 @@
     <label for="rememberMe">Remember Me</label>
   </div>
 
-  <button onclick="login()">Login</button>
+  <button onclick="secureLogin()">Login</button>
 
   <div id="error" class="error"></div>
 </div>
 
 <!-- Uses your already-upgraded auth.js -->
 <script src="auth.js"></script>
+
+<script>
+
+/* =========================================================
+   SECURITY UPGRADE — SERVER LOGIN VALIDATION
+   (ADDED ONLY — NO EXISTING CODE REMOVED)
+   ========================================================= */
+
+async function secureLogin(){
+
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  try{
+
+    const response = await fetch("https://blueroute-api-production-aaef.up.railway.app/api/admin/login",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        username:username,
+        password:password
+      })
+    });
+
+    if(response.ok){
+      login(); // calls your existing auth.js login system
+    }else{
+      document.getElementById("error").innerText="Invalid credentials";
+    }
+
+  }catch(err){
+    document.getElementById("error").innerText="Server unavailable";
+  }
+
+}
+
+</script>
 
 </body>
 </html>

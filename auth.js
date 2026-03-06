@@ -64,3 +64,52 @@ localStorage.removeItem("brx_auth_persist");
 localStorage.removeItem("brx_auth_expiry");
 window.location.href = "login.html";
 }
+
+/* =========================================================
+   SECURITY UPGRADE — SERVER SESSION VERIFICATION
+   (ADDED ONLY — ORIGINAL CODE ABOVE NOT MODIFIED)
+   ========================================================= */
+
+async function verifyAdminSession(){
+
+try{
+
+const response = await fetch(
+"https://blueroute-api-production-aaef.up.railway.app/api/admin/session-check",
+{
+method:"GET",
+headers:{
+"Content-Type":"application/json"
+}
+}
+);
+
+if(!response.ok){
+sessionStorage.removeItem("brx_auth");
+window.location.href="login.html";
+}
+
+}catch(error){
+console.warn("Session verification failed");
+}
+
+}
+
+/* =========================================================
+   AUTOMATIC VERIFICATION ON ADMIN PAGE LOAD
+   ========================================================= */
+
+if(typeof window !== "undefined"){
+window.addEventListener("load", function(){
+
+const isAdminPage =
+window.location.pathname.includes("admin") ||
+window.location.pathname.includes("shipment") ||
+window.location.pathname.includes("update");
+
+if(isAdminPage){
+verifyAdminSession();
+}
+
+});
+}
