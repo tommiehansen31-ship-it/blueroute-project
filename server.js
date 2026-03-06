@@ -38,6 +38,11 @@ app.get('/health', (req, res) => {
   res.json({ status: "ok" });
 });
 
+// 🔥 RAILWAY HEALTH CHECK ENDPOINT (ADDED - REQUIRED FOR STABILITY)
+app.get('/healthz', (req, res) => {
+  res.status(200).send("OK");
+});
+
 // Database test route
 app.get('/api/test-db', async (req, res) => {
   try {
