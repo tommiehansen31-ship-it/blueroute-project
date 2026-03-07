@@ -75,7 +75,7 @@ async function verifyAdminSession(){
 try{
 
 const response = await fetch(
-"https://blueroute-api-production-aaef.up.railway.app/api/admin/session-check",
+"https://blueroute-api-production-3ce5.up.railway.app/api/admin/session-check",
 {
 method:"GET",
 headers:{
