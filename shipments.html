@@ -188,6 +188,24 @@ if(!ADMIN_TOKEN){
 }
 
 
+/* =========================================================
+   🔐 GLOBAL AUTH HEADER INJECTOR (UPGRADE ADDED)
+   Automatically attaches admin token to every fetch request
+   ========================================================= */
+
+const ORIGINAL_FETCH = window.fetch;
+window.fetch = function(url, options = {}){
+
+  options.headers = options.headers || {};
+  
+  if(!options.headers["authorization"]){
+    options.headers["authorization"] = sessionStorage.getItem("brx_admin_token");
+  }
+
+  return ORIGINAL_FETCH(url, options);
+};
+
+
 /* 🔧 SAFE URL FIX (UPGRADE — DOES NOT CHANGE YOUR CODE) */
 function safeURL(url){
   return url.replace(/([^:]\/)\/+/g, "$1");
@@ -327,7 +345,8 @@ const response = await fetch(
 {
 method:"GET",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"authorization": sessionStorage.getItem("brx_admin_token")
 }
 }
 );
