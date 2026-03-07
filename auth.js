@@ -113,3 +113,94 @@ verifyAdminSession();
 
 });
 }
+
+/* =========================================================
+   🔐 ADMIN TOKEN SYSTEM (SECURE UPGRADE — ADDED ONLY)
+   ========================================================= */
+
+/*
+Stores admin token returned by backend login
+*/
+function storeAdminToken(token){
+try{
+sessionStorage.setItem("brx_admin_token", token);
+}catch(e){
+console.warn("Token storage failed");
+}
+}
+
+/*
+Retrieves admin token
+*/
+function getAdminToken(){
+return sessionStorage.getItem("brx_admin_token");
+}
+
+/*
+Attach token automatically to all API calls
+*/
+const ORIGINAL_FETCH = window.fetch;
+
+window.fetch = function(url, options = {}){
+
+options.headers = options.headers || {};
+
+if(!options.headers["authorization"]){
+const token = sessionStorage.getItem("brx_admin_token");
+if(token){
+options.headers["authorization"] = token;
+}
+}
+
+return ORIGINAL_FETCH(url, options);
+
+};
+
+/* =========================================================
+   🔐 AUTO TOKEN DETECTION AFTER LOGIN
+   ========================================================= */
+
+(function(){
+
+const originalSecureLogin = window.secureLogin;
+
+if(typeof originalSecureLogin === "function"){
+
+window.secureLogin = async function(){
+
+try{
+
+const username = document.getElementById("username").value;
+const password = document.getElementById("password").value;
+
+const response = await fetch(
+"https://blueroute-api-production-3ce5.up.railway.app/api/admin/login",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+username:username,
+password:password
+})
+}
+);
+
+const data = await response.json();
+
+if(data && data.token){
+storeAdminToken(data.token);
+}
+
+}catch(e){
+console.warn("Token capture failed");
+}
+
+return originalSecureLogin();
+
+}
+
+}
+
+})();
