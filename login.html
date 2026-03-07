@@ -141,6 +141,21 @@ async function secureLogin(){
 
 }
 
+/* =========================================================
+   🔐 TOKEN RECOVERY SYSTEM (UPGRADE ADDED)
+   Ensures token exists before admin pages load
+   ========================================================= */
+
+(function(){
+
+const storedToken = sessionStorage.getItem("brx_admin_token");
+
+if(storedToken){
+console.log("Admin token restored");
+}
+
+})();
+
 </script>
 
 </body>

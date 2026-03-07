@@ -168,6 +168,123 @@ loadShipments();
 
 loadShipments();
 
+
+/* =========================================================
+   🔐 LOCAL STORAGE PROTECTION (UPGRADE ADDED)
+   Prevents corrupted shipment data
+   ========================================================= */
+
+(function(){
+
+try{
+
+const data = JSON.parse(localStorage.getItem("brx_shipments") || "[]");
+
+if(!Array.isArray(data)){
+localStorage.setItem("brx_shipments","[]");
+}
+
+}catch(e){
+
+localStorage.setItem("brx_shipments","[]");
+
+}
+
+})();
+
+
+/* =========================================================
+   🔐 DUPLICATE SHIPMENT PREVENTION (UPGRADE ADDED)
+   ========================================================= */
+
+(function(){
+
+const originalSave = saveShipment;
+
+window.saveShipment = function(){
+
+const input=document.getElementById("newTracking");
+
+const tracking=input.value.trim();
+
+if(!tracking)return;
+
+let shipments=JSON.parse(localStorage.getItem("brx_shipments") || "[]");
+
+if(shipments.includes(tracking)){
+alert("Shipment already saved.");
+return;
+}
+
+originalSave();
+
+}
+
+})();
+
+
+/* =========================================================
+   🔗 AUTO TRACKING LINK HANDLER (UPGRADE ADDED)
+   If portal opened with ?track=XXXX it auto-saves
+   ========================================================= */
+
+(function(){
+
+const params=new URLSearchParams(window.location.search);
+
+const track=params.get("track");
+
+if(track){
+
+let shipments=JSON.parse(localStorage.getItem("brx_shipments") || "[]");
+
+if(!shipments.includes(track)){
+
+shipments.push(track);
+
+localStorage.setItem("brx_shipments",JSON.stringify(shipments));
+
+}
+
+}
+
+})();
+
+
+/* =========================================================
+   🚀 AUTO REFRESH TRACKING CARDS (UPGRADE ADDED)
+   ========================================================= */
+
+(function(){
+
+const cards=document.querySelectorAll(".shipment-card a");
+
+cards.forEach(link=>{
+
+link.addEventListener("click",function(){
+
+const track=this.href.split("track=")[1];
+
+if(track){
+
+let shipments=JSON.parse(localStorage.getItem("brx_shipments") || "[]");
+
+if(!shipments.includes(track)){
+
+shipments.push(track);
+
+localStorage.setItem("brx_shipments",JSON.stringify(shipments));
+
+}
+
+}
+
+});
+
+});
+
+})();
+
 </script>
 
 </body>

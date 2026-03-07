@@ -204,3 +204,42 @@ return originalSecureLogin();
 }
 
 })();
+
+/* =========================================================
+   🔐 VERIFY SESSION TOKEN INJECTION (UPGRADE ADDED)
+   Ensures session-check request includes admin token
+   ========================================================= */
+
+(function(){
+
+const originalVerify = verifyAdminSession;
+
+verifyAdminSession = async function(){
+
+try{
+
+const token = sessionStorage.getItem("brx_admin_token");
+
+const response = await fetch(
+"https://blueroute-api-production-3ce5.up.railway.app/api/admin/session-check",
+{
+method:"GET",
+headers:{
+"Content-Type":"application/json",
+"authorization": token
+}
+}
+);
+
+if(!response.ok){
+sessionStorage.removeItem("brx_auth");
+window.location.href="login.html";
+}
+
+}catch(error){
+console.warn("Session verification failed");
+}
+
+};
+
+})();

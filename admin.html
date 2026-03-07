@@ -76,6 +76,62 @@
 const ADMIN_TOKEN = sessionStorage.getItem("brx_admin_token");
 
 
+/* =========================================================
+   🔐 TOKEN GUARD (UPGRADE ADDED)
+   Prevents admin panel access without token
+   ========================================================= */
+
+(function(){
+
+const token = sessionStorage.getItem("brx_admin_token");
+
+if(!token){
+alert("Admin session missing. Please login again.");
+window.location.href="login.html";
+}
+
+})();
+
+
+/* =========================================================
+   🔐 GLOBAL AUTH HEADER INJECTOR (UPGRADE ADDED)
+   Automatically attaches token to all API requests
+   ========================================================= */
+
+const ORIGINAL_FETCH = window.fetch;
+
+window.fetch = function(url, options = {}){
+
+options.headers = options.headers || {};
+
+if(!options.headers["authorization"]){
+options.headers["authorization"] = sessionStorage.getItem("brx_admin_token");
+}
+
+return ORIGINAL_FETCH(url, options);
+
+};
+
+
+/* =========================================================
+   🔧 API DOMAIN CORRECTION (UPGRADE ADDED)
+   Converts old Railway domain to current one
+   ========================================================= */
+
+function correctApiDomain(url){
+
+if(url.includes("aaef.up.railway.app")){
+return url.replace(
+"aaef.up.railway.app",
+"3ce5.up.railway.app"
+);
+}
+
+return url;
+
+}
+
+
 /* ======== RAILWAY PRODUCTION API UPGRADE (ONLY CHANGE MADE) ======== */
 const SCRIPT_URL = "https://blueroute-api-production-aaef.up.railway.app/api/admin/create-shipment";
 
@@ -105,7 +161,7 @@ function createShipment() {
     remarks: remarks.value
   };
 
-  fetch(SCRIPT_URL, {
+  fetch(correctApiDomain(SCRIPT_URL), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -115,6 +171,14 @@ function createShipment() {
   })
   .then(res => res.json())
   .then(data => {
+
+    /* ===== API RESPONSE GUARD (UPGRADE ADDED) ===== */
+
+    if(!data || !data.trackingNumber){
+      alert("Shipment creation failed (API error)");
+      return;
+    }
+
     result.innerHTML =
       "✅ Shipment Created<br>Tracking Number: <b>" + data.trackingNumber + "</b>";
   })

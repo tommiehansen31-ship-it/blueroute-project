@@ -159,5 +159,99 @@
 
 </div>
 
+
+<!-- =========================================================
+     🔐 ADMIN TOKEN GUARD (UPGRADE ADDED)
+========================================================= -->
+
+<script>
+
+(function(){
+
+const token = sessionStorage.getItem("brx_admin_token");
+
+if(!token){
+
+alert("Admin session expired. Please login again.");
+
+window.location.href = "login.html";
+
+}
+
+})();
+
+</script>
+
+
+<!-- =========================================================
+     🔐 GLOBAL AUTH HEADER INJECTOR (UPGRADE ADDED)
+========================================================= -->
+
+<script>
+
+const ORIGINAL_FETCH = window.fetch;
+
+window.fetch = function(url, options = {}){
+
+options.headers = options.headers || {};
+
+if(!options.headers["authorization"]){
+
+const token = sessionStorage.getItem("brx_admin_token");
+
+if(token){
+options.headers["authorization"] = token;
+}
+
+}
+
+return ORIGINAL_FETCH(url, options);
+
+};
+
+</script>
+
+
+<!-- =========================================================
+     🔐 SERVER SESSION VERIFICATION (UPGRADE ADDED)
+========================================================= -->
+
+<script>
+
+async function verifyDashboardAccess(){
+
+try{
+
+const response = await fetch(
+"https://blueroute-api-production-3ce5.up.railway.app/api/admin/session-check",
+{
+method:"GET",
+headers:{
+"Content-Type":"application/json",
+"authorization": sessionStorage.getItem("brx_admin_token")
+}
+}
+);
+
+if(!response.ok){
+
+alert("Unauthorized admin access detected.");
+
+window.location.href="login.html";
+
+}
+
+}catch(error){
+
+console.warn("Admin verification failed");
+
+}
+
+}
+
+verifyDashboardAccess();
+
+</script>
+
 </body>
 </html>

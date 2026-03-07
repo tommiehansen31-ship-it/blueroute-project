@@ -206,6 +206,23 @@ window.fetch = function(url, options = {}){
 };
 
 
+/* =========================================================
+   🔐 TOKEN GUARD (UPGRADE ADDED)
+   Prevents admin panel from loading without token
+   ========================================================= */
+
+(function(){
+
+const token = sessionStorage.getItem("brx_admin_token");
+
+if(!token){
+alert("Admin session missing. Please login again.");
+window.location.href="login.html";
+}
+
+})();
+
+
 /* 🔧 SAFE URL FIX (UPGRADE — DOES NOT CHANGE YOUR CODE) */
 function safeURL(url){
   return url.replace(/([^:]\/)\/+/g, "$1");
@@ -223,6 +240,15 @@ function loadShipments() {
   })
   .then(res => res.json())
   .then(data => {
+
+    /* ===== API RESPONSE GUARD (UPGRADE ADDED) ===== */
+
+    if(!Array.isArray(data)){
+      console.warn("API returned error",data);
+      alert("Failed to load shipments (API error)");
+      return;
+    }
+
     ALL_DATA = data;
     renderTable(data);
   })

@@ -7,6 +7,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const API_URL = "https://blueroute-api-production-3ce5.up.railway.app/api/track";
 
+
+/* =========================================================
+   🔧 API DOMAIN CORRECTION (UPGRADE ADDED)
+   ========================================================= */
+
+function correctApiDomain(url){
+
+if(url.includes("aaef.up.railway.app")){
+return url.replace("aaef.up.railway.app","3ce5.up.railway.app");
+}
+
+return url;
+
+}
+
+
+/* =========================================================
+   🔄 SAFE FETCH (RAILWAY COLD START PROTECTION)
+   ========================================================= */
+
+async function safeFetch(url){
+
+try{
+
+const res = await fetch(url);
+return res;
+
+}catch(err){
+
+console.warn("Retrying request after delay...");
+
+await new Promise(r=>setTimeout(r,1200));
+
+return fetch(url);
+
+}
+
+}
+
+
   const btn = document.getElementById("track-btn");
   const inputField = document.getElementById("tracking-number");
   const result = document.getElementById("tracking-result");
@@ -52,8 +92,18 @@ const API_URL = "https://blueroute-api-production-3ce5.up.railway.app/api/track"
 
     try{
 
-      const res = await fetch(`${API_URL}/${input}`);
-      const data = await res.json();
+      const res = await safeFetch(`${correctApiDomain(API_URL)}/${input}`);
+
+      /* ===== SAFE JSON PARSER (UPGRADE ADDED) ===== */
+
+      let data;
+
+      try{
+        data = await res.json();
+      }catch(parseError){
+        result.innerHTML = `<div class="status error">Tracking service error.</div>`;
+        return;
+      }
 
       if(data.error || data.found === false){
         result.innerHTML = `<div class="status error">Tracking number not found.</div>`;

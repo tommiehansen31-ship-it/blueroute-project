@@ -229,6 +229,49 @@
 
 <script>
 
+/* =========================================================
+   🔧 API DOMAIN CORRECTION (UPGRADE ADDED)
+   Automatically switches old Railway deployment URL
+   ========================================================= */
+
+function correctApiDomain(url){
+
+if(url.includes("aaef.up.railway.app")){
+return url.replace(
+"aaef.up.railway.app",
+"3ce5.up.railway.app"
+);
+}
+
+return url;
+
+}
+
+/* =========================================================
+   🔄 SAFE FETCH WRAPPER (UPGRADE ADDED)
+   Handles Railway cold-start delays
+   ========================================================= */
+
+async function safeFetch(url){
+
+try{
+
+const res = await fetch(url);
+
+return res;
+
+}catch(err){
+
+console.warn("Retrying API request...");
+
+await new Promise(r=>setTimeout(r,1000));
+
+return fetch(url);
+
+}
+
+}
+
 /* ======== PRODUCTION API UPGRADE (ONLY CHANGE MADE) ======== */
 const SCRIPT_URL = "https://blueroute-api-production-aaef.up.railway.app/api/track/";
 
@@ -236,7 +279,7 @@ function trackShipment() {
 
   const tracking = document.getElementById("trackingInput").value;
 
-  fetch(`${SCRIPT_URL}${tracking}`)
+  safeFetch(`${correctApiDomain(SCRIPT_URL)}${tracking}`)
     .then(res => res.json())
     .then(data => {
 
@@ -275,6 +318,12 @@ function trackShipment() {
 
       document.getElementById("statusProgress").innerHTML =
         renderProgress(shipment.status);
+
+    })
+    .catch(()=>{
+
+      document.getElementById("result").innerHTML =
+      "<p>Tracking service temporarily unavailable.</p>";
 
     });
 }
