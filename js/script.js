@@ -5,7 +5,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  const API_URL = "https://blueroute-api-production-710f.up.railway.app/api/track";
+const API_URL = "https://blueroute-api-production-710f.up.railway.app/api/track";
 
   const btn = document.getElementById("track-btn");
   const inputField = document.getElementById("tracking-number");
