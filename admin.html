@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BlueRoute Express Admin</title>
+  <style>
+    body { font-family: Arial; background:#f4f6f8; padding:40px; }
+    .panel {
+      max-width:700px; background:white; padding:25px;
+      border-radius:8px; box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    }
+    h2 { margin-top:0; }
+    input, textarea {
+      width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc;
+    }
+    button {
+      background:#007bff; color:white; border:none;
+      padding:14px; width:100%; font-size:16px; cursor:pointer;
+    }
+    #result { margin-top:20px; font-weight:bold; color:green; }
+  </style>
+</head>
+<body>
+
+<script src="auth.js"></script>
+<script>protectPage();</script>
+
+<div class="panel">
+
+  <button onclick="logout()" style="background:#dc3545;margin-bottom:15px;">
+    Logout
+  </button>
+
+  <h2>Create Shipment</h2>
+
+  <h3>Sender Information</h3>
+  <input id="senderName" placeholder="Sender Name">
+  <input id="senderAddress" placeholder="Sender Address">
+  <input id="senderPhone" placeholder="Sender Phone">
+  <input id="senderEmail" placeholder="Sender Email">
+
+  <h3>Receiver Information</h3>
+  <input id="receiverName" placeholder="Receiver Name">
+  <input id="receiverAddress" placeholder="Receiver Address">
+  <input id="receiverPhone" placeholder="Receiver Phone">
+  <input id="receiverEmail" placeholder="Receiver Email">
+
+  <h3>Shipment Route</h3>
+  <input id="origin" placeholder="Origin">
+  <input id="destination" placeholder="Destination">
+
+  <h3>Shipment Details</h3>
+  <input id="shipmentName" placeholder="Shipment Name / Description">
+  <input id="weight" placeholder="Weight (kg)">
+  <input id="itemsSent" placeholder="Items Sent">
+  <input id="boxCount" placeholder="Number of Boxes">
+
+  <label>Package Sent Date</label>
+  <input type="date" id="sentDate">
+
+  <label>Estimated Delivery Date</label>
+  <input type="date" id="estimatedDelivery">
+
+  <textarea id="remarks" placeholder="Remarks"></textarea>
+
+  <button onclick="createShipment()">Create Shipment</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+
+/* =========================================================
+   SECURITY TOKEN LOADER (ADDED ONLY)
+   ========================================================= */
+
+const ADMIN_TOKEN = sessionStorage.getItem("brx_admin_token");
+
+
+/* ======== RAILWAY PRODUCTION API UPGRADE (ONLY CHANGE MADE) ======== */
+const SCRIPT_URL = "https://blueroute-api-production-aaef.up.railway.app/api/admin/create-shipment";
+
+function createShipment() {
+
+  const originInput = document.getElementById("origin");
+  const destinationInput = document.getElementById("destination");
+
+  const payload = {
+    senderName: senderName.value,
+    senderAddress: senderAddress.value,
+    senderPhone: senderPhone.value,
+    senderEmail: senderEmail.value,
+    receiverName: receiverName.value,
+    receiverAddress: receiverAddress.value,
+    receiverPhone: receiverPhone.value,
+    receiverEmail: receiverEmail.value,
+    origin: originInput.value,
+    destination: destinationInput.value,
+
+    shipmentName: shipmentName.value,
+    weight: weight.value,
+    itemsSent: itemsSent.value,
+    boxCount: boxCount.value,
+    sentDate: sentDate.value,
+    estimatedDelivery: estimatedDelivery.value,
+    remarks: remarks.value
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "authorization": ADMIN_TOKEN
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    result.innerHTML =
+      "✅ Shipment Created<br>Tracking Number: <b>" + data.trackingNumber + "</b>";
+  })
+  .catch(() => alert("Error creating shipment"));
+}
+
+/* =========================================================
+   SECURITY UPGRADE — ADMIN SESSION VALIDATION
+   (ADDED ONLY — ORIGINAL CODE ABOVE NOT MODIFIED)
+   ========================================================= */
+
+async function verifyAdminAccess(){
+
+try{
+
+const response = await fetch(
+"https://blueroute-api-production-aaef.up.railway.app/api/admin/session-check",
+{
+method:"GET",
+headers:{
+"Content-Type":"application/json"
+}
+}
+);
+
+if(!response.ok){
+alert("Unauthorized access detected.");
+window.location.href="login.html";
+}
+
+}catch(error){
+console.warn("Admin verification failed");
+}
+
+}
+
+verifyAdminAccess();
+
+</script>
+</body>
+</html>

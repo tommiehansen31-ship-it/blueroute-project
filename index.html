@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BlueRoute Express Delivery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+/* ================================= */
+/* ENTERPRISE LOGO UPGRADE */
+/* ================================= */
+
+.logo{
+font-size:22px;
+font-weight:700;
+color:#0077ff;
+letter-spacing:.4px;
+cursor:pointer;
+transition:.25s;
+}
+
+.logo:hover{
+opacity:.85;
+transform:translateY(-1px);
+}
+
+/* ================================= */
+/* ENTERPRISE NAVIGATION */
+/* ================================= */
+
+#mainNav{
+display:flex;
+align-items:center;
+gap:28px;
+}
+
+#mainNav a{
+text-decoration:none;
+font-weight:600;
+color:#222;
+position:relative;
+transition:.25s;
+}
+
+#mainNav a::after{
+content:"";
+position:absolute;
+left:0;
+bottom:-6px;
+width:0%;
+height:2px;
+background:#0077ff;
+transition:.25s;
+}
+
+#mainNav a:hover::after{
+width:100%;
+}
+
+#mainNav a:hover{
+color:#0077ff;
+}
+
+/* HERO OVERLAY */
+.hero-overlay{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:radial-gradient(circle at 30% 40%,rgba(78,168,255,.25),transparent);
+pointer-events:none;
+}
+
+/* SERVICES */
+.service-icons{
+padding:90px 0;
+background:white;
+text-align:center;
+}
+
+.icon-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:30px;
+margin-top:40px;
+}
+
+.icon-card{
+padding:30px;
+border-radius:10px;
+background:#f4f7fb;
+transition:.3s;
+}
+
+.icon-card:hover{
+transform:translateY(-5px);
+}
+
+.icon{
+font-size:36px;
+margin-bottom:15px;
+color:#0077ff;
+}
+
+/* ROUTES */
+.routes{
+background:#f4f7fb;
+padding:100px 0;
+text-align:center;
+}
+
+.route-line{
+width:200px;
+height:3px;
+background:#0077ff;
+margin:20px auto;
+animation:routePulse 2s infinite;
+}
+
+@keyframes routePulse{
+0%{opacity:.2}
+50%{opacity:1}
+100%{opacity:.2}
+}
+
+/* DASHBOARD */
+.ops-dashboard{
+padding:90px 0;
+background:#0b1f36;
+color:white;
+text-align:center;
+}
+
+.ops-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:30px;
+margin-top:40px;
+}
+
+.ops-card{
+padding:30px;
+background:rgba(255,255,255,.05);
+border-radius:10px;
+}
+
+/* CTA */
+.cta-banner{
+background:linear-gradient(90deg,#0077ff,#4ea8ff);
+color:white;
+padding:70px 0;
+text-align:center;
+}
+
+.cta-banner .btn{
+background:white;
+color:#0077ff;
+margin-top:20px;
+}
+
+/* PORTAL */
+.portal-preview{
+padding:100px 0;
+background:#f4f7fb;
+text-align:center;
+}
+
+.portal-preview p{
+max-width:700px;
+margin:20px auto;
+color:#555;
+}
+
+/* LIVE ACTIVITY */
+.live-activity{
+padding:90px 0;
+background:#f4f7fb;
+text-align:center;
+}
+
+.activity-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:25px;
+margin-top:40px;
+}
+
+.activity-card{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.activity-icon{
+font-size:28px;
+margin-bottom:10px;
+}
+
+.mobile-menu{
+display:none;
+font-size:28px;
+cursor:pointer;
+}
+
+@media(max-width:768px){
+
+.mobile-menu{
+display:block;
+}
+
+#mainNav{
+display:none;
+flex-direction:column;
+width:100%;
+background:white;
+padding:15px 0;
+}
+
+#mainNav.active{
+display:flex;
+}
+
+#mainNav a{
+padding:12px 20px;
+border-top:1px solid #eee;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="progress-bar"></div>
+
+<header>
+<div class="container nav">
+
+<a href="index.html"><div class="logo">BlueRoute Express</div></a>
+
+<div class="mobile-menu" onclick="toggleMenu()">☰</div>
+
+<nav id="mainNav">
+
+<a href="about.html">About</a>
+<a href="services.html">Services</a>
+<a href="tracking.html">Tracking</a>
+<a href="contact.html" class="btn">Contact</a>
+<a href="portal.html">Customer Portal</a>
+
+</nav>
+
+</div>
+</header>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-overlay"></div>
+
+<div class="container hero-content">
+
+<h1>Delivering Across Every Route, Connecting Businesses Worldwide</h1>
+
+<p>
+BlueRoute Express provides advanced logistics and freight delivery solutions built for the demands of modern global trade. 
+From international cargo transportation and customs clearance to secure last-mile delivery, our logistics network is 
+engineered to move shipments efficiently across cities, countries, and continents.
+</p>
+
+<p>
+With real-time shipment tracking, dedicated logistics coordination, and a commitment to operational reliability, 
+BlueRoute Express ensures every shipment travels safely, arrives on schedule, and remains fully visible at every stage of the journey.
+</p>
+
+<div class="hero-highlights">
+
+<div class="hero-point">✔ Real-Time Shipment Tracking</div>
+<div class="hero-point">✔ Global Logistics & Freight Network</div>
+<div class="hero-point">✔ Secure Cargo Handling & Monitoring</div>
+<div class="hero-point">✔ Reliable International Delivery Operations</div>
+
+</div>
+
+<a href="tracking.html" class="btn">Track Shipment</a>
+
+</div>
+
+</section>
+
+<!-- SERVICES -->
+
+<section class="service-icons">
+
+<div class="container">
+
+<h2>Integrated Logistics Solutions</h2>
+
+<div class="icon-grid">
+
+<div class="icon-card">
+<div class="icon">🚚</div>
+<h3>Freight Transport</h3>
+<p>Reliable cargo transportation across global trade routes.</p>
+</div>
+
+<div class="icon-card">
+<div class="icon">📦</div>
+<h3>Warehouse Storage</h3>
+<p>Secure storage facilities with real-time inventory monitoring.</p>
+</div>
+
+<div class="icon-card">
+<div class="icon">🛰</div>
+<h3>Real-Time Tracking</h3>
+<p>Track shipments live across logistics networks.</p>
+</div>
+
+<div class="icon-card">
+<div class="icon">🌎</div>
+<h3>Global Logistics</h3>
+<p>International distribution hubs across major shipping lanes.</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ROUTES -->
+
+<section class="routes">
+
+<div class="container">
+
+<h2>Active Delivery Routes</h2>
+
+<div class="route-line"></div>
+<div class="route-line"></div>
+<div class="route-line"></div>
+
+<p>
+BlueRoute Express operates across strategic global logistics corridors.
+</p>
+
+</div>
+
+</section>
+
+<!-- OPERATIONS -->
+
+<section class="ops-dashboard">
+
+<div class="container">
+
+<h2>Operational Network</h2>
+
+<div class="ops-grid">
+
+<div class="ops-card">
+<h3>450K+</h3>
+<p>Shipments Delivered</p>
+</div>
+
+<div class="ops-card">
+<h3>80+</h3>
+<p>Distribution Hubs</p>
+</div>
+
+<div class="ops-card">
+<h3>120+</h3>
+<p>Countries Served</p>
+</div>
+
+<div class="ops-card">
+<h3>24/7</h3>
+<p>Logistics Monitoring</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- CTA -->
+
+<section class="cta-banner">
+
+<div class="container">
+
+<h2>Ready to Ship With BlueRoute?</h2>
+
+<p>
+Start tracking your shipment or contact our logistics team.
+</p>
+
+<a href="tracking.html" class="btn">Track Shipment</a>
+
+</div>
+
+</section>
+
+<!-- PORTAL -->
+
+<section class="portal-preview">
+
+<div class="container">
+
+<h2>Customer Shipment Portal</h2>
+
+<p>
+Manage and track your shipments easily through our secure customer portal.
+</p>
+
+<a href="portal.html" class="btn">Open Customer Portal</a>
+
+</div>
+
+</section>
+
+<!-- LIVE ACTIVITY -->
+
+<section class="live-activity">
+
+<div class="container">
+
+<h2>Live Logistics Activity</h2>
+
+<div class="activity-grid">
+
+<div class="activity-card">
+<div class="activity-icon">🚚</div>
+<p>Shipment BRX-1045 departed Singapore Distribution Hub</p>
+</div>
+
+<div class="activity-card">
+<div class="activity-icon">✈️</div>
+<p>Air cargo flight cleared customs in Hong Kong</p>
+</div>
+
+<div class="activity-card">
+<div class="activity-icon">🚢</div>
+<p>Ocean freight container loaded at Manila Port</p>
+</div>
+
+<div class="activity-card">
+<div class="activity-icon">📦</div>
+<p>Warehouse inventory processed for outbound delivery</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<section class="footer-pro">
+
+<div class="container footer-grid">
+
+<div>
+<h4>BlueRoute Express</h4>
+<p>
+Global logistics and freight solutions delivering reliable cargo movement
+across international trade routes.
+</p>
+</div>
+
+<div>
+<h4>Quick Links</h4>
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="services.html">Services</a>
+<a href="tracking.html">Tracking</a>
+<a href="portal.html">Customer Portal</a>
+</div>
+
+<div>
+<h4>Logistics Services</h4>
+<a href="#">Freight Transport</a>
+<a href="#">Warehousing</a>
+<a href="#">Distribution</a>
+<a href="#">International Shipping</a>
+</div>
+
+<div class="footer-contact">
+<h4>Contact</h4>
+<p>Philippines Phone:</p>
+<p><strong>+639664569947</strong></p>
+<p>Operations: 24/7 Logistics Monitoring</p>
+</div>
+
+</div>
+
+</section>
+
+<footer class="footer">
+
+<div class="container footer-bottom">
+
+© 2026 BlueRoute Express Delivery. All Rights Reserved.
+
+</div>
+
+</footer>
+
+<script src="js/script.js"></script>
+
+<script>
+function toggleMenu(){
+document.getElementById("mainNav").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

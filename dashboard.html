@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BlueRoute Express — Operations Console</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- ✅ FIX: Load auth BEFORE body -->
+  <script src="auth.js"></script>
+
+  <style>
+    * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Inter',sans-serif;
+    }
+
+    body {
+      background:#f1f5f9;
+      color:#1e293b;
+    }
+
+    .topbar {
+      height:70px;
+      background:#0f172a;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 30px;
+      box-shadow:0 2px 6px rgba(0,0,0,.2);
+    }
+
+    .brand {
+      font-size:20px;
+      font-weight:600;
+      letter-spacing:.4px;
+    }
+
+    .logout-btn {
+      background:#ef4444;
+      border:none;
+      color:white;
+      padding:10px 16px;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:14px;
+    }
+
+    .container {
+      padding:40px;
+      max-width:1200px;
+      margin:auto;
+    }
+
+    .page-title {
+      font-size:28px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+
+    .page-sub {
+      color:#64748b;
+      margin-bottom:35px;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:30px;
+    }
+
+    .card {
+      background:white;
+      padding:30px;
+      border-radius:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,.06);
+      transition:.25s ease;
+      text-decoration:none;
+      color:inherit;
+      border-top:4px solid #0ea5e9;
+    }
+
+    .card.update {
+      border-top-color:#10b981;
+    }
+
+    .card:hover {
+      transform:translateY(-6px);
+      box-shadow:0 18px 40px rgba(0,0,0,.12);
+    }
+
+    .card h3 {
+      font-size:22px;
+      margin-bottom:10px;
+    }
+
+    .card p {
+      color:#64748b;
+      line-height:1.5;
+      font-size:14px;
+    }
+
+    .footer {
+      margin-top:50px;
+      text-align:center;
+      color:#94a3b8;
+      font-size:12px;
+    }
+  </style>
+</head>
+
+<body onload="protectPage()">
+
+<div class="topbar">
+  <div class="brand">BlueRoute Express · Logistics System</div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+
+  <div class="page-title">Operations Dashboard</div>
+  <div class="page-sub">
+    Manage shipment creation, tracking updates, and operational flow.
+  </div>
+
+  <div class="grid">
+
+    <a href="admin.html" class="card">
+      <h3>Create Shipment</h3>
+      <p>
+        Register new consignments, assign routing, declare shipment
+        specifications and generate tracking numbers instantly.
+      </p>
+    </a>
+
+    <a href="update.html" class="card update">
+      <h3>Update Shipment</h3>
+      <p>
+        Record logistics scans, update delivery progress, and maintain
+        real-time shipment visibility across the network.
+      </p>
+    </a>
+
+    <a href="shipments.html" class="card">
+      <h3>Manage Shipments</h3>
+      <p>
+        View and edit shipment information directly from the live system.
+        Make operational adjustments without opening Google Sheets.
+      </p>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    BlueRoute Express Internal Platform · Secure Access Environment
+  </div>
+
+</div>
+
+</body>
+</html>
