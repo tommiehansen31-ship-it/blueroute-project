@@ -243,3 +243,29 @@ console.warn("Session verification failed");
 };
 
 })();
+
+/* =========================================
+BACKEND LOGIN MODE PATCH
+========================================= */
+
+(function(){
+
+const originalLogin = window.login;
+
+window.login = function(){
+
+// if backend token exists, skip old credential check
+const token = sessionStorage.getItem("brx_admin_token");
+
+if(token){
+sessionStorage.setItem("brx_auth","true");
+window.location.href="shipments.html";
+return;
+}
+
+// fallback to original login
+return originalLogin();
+
+};
+
+})();
