@@ -120,8 +120,17 @@ async function secureLogin(){
       })
     });
 
-    if(response.ok){
+    /* ===== UPGRADE ADDED HERE ===== */
+
+    const data = await response.json();
+
+    if(data.success){
+
+      /* STORE ADMIN TOKEN FOR FUTURE REQUESTS */
+      sessionStorage.setItem("brx_admin_token", data.token);
+
       login(); // calls your existing auth.js login system
+
     }else{
       document.getElementById("error").innerText="Invalid credentials";
     }
