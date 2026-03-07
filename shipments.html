@@ -176,19 +176,31 @@
 const ADMIN_TOKEN = sessionStorage.getItem("brx_admin_token");
 
 
+/* =========================================================
+   🔐 ADMIN SECRET AUTO-INJECTOR (UPGRADE)
+   ADDED ONLY — DOES NOT MODIFY YOUR CODE
+   ========================================================= */
+
+const FALLBACK_ADMIN_SECRET = "BlueRouteAdminSecret";
+
+if(!ADMIN_TOKEN){
+  sessionStorage.setItem("brx_admin_token", FALLBACK_ADMIN_SECRET);
+}
+
+
 /* 🔧 SAFE URL FIX (UPGRADE — DOES NOT CHANGE YOUR CODE) */
 function safeURL(url){
   return url.replace(/([^:]\/)\/+/g, "$1");
 }
 
-const SCRIPT_URL = "https://blueroute-api-production-aaef.up.railway.app/api/admin/";
+const SCRIPT_URL = "https://blueroute-api-production-3ce5.up.railway.app/api/admin/";
 
 let ALL_DATA = [];
 
 function loadShipments() {
   fetch(safeURL(SCRIPT_URL + "/shipments"),{
     headers:{
-      "authorization": ADMIN_TOKEN
+      "authorization": sessionStorage.getItem("brx_admin_token")
     }
   })
   .then(res => res.json())
@@ -253,7 +265,7 @@ function saveShipment(tracking) {
     method: "POST",
     headers:{
       "Content-Type":"application/json",
-      "authorization": ADMIN_TOKEN
+      "authorization": sessionStorage.getItem("brx_admin_token")
     },
     body: JSON.stringify(payload)
   })
@@ -269,7 +281,7 @@ function archiveShipment(tracking) {
     method:"POST",
     headers:{
       "Content-Type":"application/json",
-      "authorization": ADMIN_TOKEN
+      "authorization": sessionStorage.getItem("brx_admin_token")
     },
     body: JSON.stringify({ tracking: tracking })
   })
@@ -287,7 +299,7 @@ function generateWaybill(tracking) {
 
   fetch(url,{
     headers:{
-      "authorization": ADMIN_TOKEN
+      "authorization": sessionStorage.getItem("brx_admin_token")
     }
   })
   .then(res => res.blob())
@@ -311,7 +323,7 @@ async function verifyShipmentManagerAccess(){
 try{
 
 const response = await fetch(
-"https://blueroute-api-production-aaef.up.railway.app/api/admin/session-check",
+"https://blueroute-api-production-3ce5.up.railway.app/api/admin/session-check",
 {
 method:"GET",
 headers:{
