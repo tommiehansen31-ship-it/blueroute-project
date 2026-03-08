@@ -132,7 +132,7 @@ loginBtn.disabled = true;
 
       sessionStorage.setItem("brx_admin_token", data.token);
 
-      login();
+      window.location.href = "admin-console.html";
 
     }else{
       document.getElementById("error").innerText="Invalid credentials";
