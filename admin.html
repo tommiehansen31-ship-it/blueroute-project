@@ -69,17 +69,10 @@
 
 <script>
 
-/* =========================================================
-   SECURITY TOKEN LOADER (ADDED ONLY)
-   ========================================================= */
-
 const ADMIN_TOKEN = sessionStorage.getItem("brx_admin_token");
 
-
-/* =========================================================
-   🔐 TOKEN GUARD (UPGRADE ADDED)
-   Prevents admin panel access without token
-   ========================================================= */
+/* ===== UPGRADE ADDED ===== */
+const ADMIN_SECRET = "27383832990019283872";
 
 (function(){
 
@@ -92,12 +85,6 @@ window.location.href="login.html";
 
 })();
 
-
-/* =========================================================
-   🔐 GLOBAL AUTH HEADER INJECTOR (UPGRADE ADDED)
-   Automatically attaches token to all API requests
-   ========================================================= */
-
 const ORIGINAL_FETCH = window.fetch;
 
 window.fetch = function(url, options = {}){
@@ -108,32 +95,20 @@ if(!options.headers["authorization"]){
 options.headers["authorization"] = sessionStorage.getItem("brx_admin_token");
 }
 
+/* ===== UPGRADE ADDED ===== */
+if(!options.headers["Authorization"]){
+options.headers["Authorization"] = ADMIN_SECRET;
+}
+
 return ORIGINAL_FETCH(url, options);
 
 };
 
-
-/* =========================================================
-   🔧 API DOMAIN CORRECTION (UPGRADE ADDED)
-   Converts old Railway domain to current one
-   ========================================================= */
-
 function correctApiDomain(url){
-
-if(url.includes("aaef.up.railway.app")){
-return url.replace(
-"aaef.up.railway.app",
-"3ce5.up.railway.app"
-);
-}
-
 return url;
-
 }
 
-
-/* ======== RAILWAY PRODUCTION API UPGRADE (ONLY CHANGE MADE) ======== */
-const SCRIPT_URL = "https://blueroute-api-production-aaef.up.railway.app/api/admin/create-shipment";
+const SCRIPT_URL = "https://blueroute-api-production-e23a.up.railway.app/api/admin/create-shipment";
 
 function createShipment() {
 
@@ -165,14 +140,13 @@ function createShipment() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "authorization": ADMIN_TOKEN
+      "authorization": ADMIN_TOKEN,
+      "Authorization": ADMIN_SECRET
     },
     body: JSON.stringify(payload)
   })
   .then(res => res.json())
   .then(data => {
-
-    /* ===== API RESPONSE GUARD (UPGRADE ADDED) ===== */
 
     if(!data || !data.trackingNumber){
       alert("Shipment creation failed (API error)");
@@ -185,21 +159,18 @@ function createShipment() {
   .catch(() => alert("Error creating shipment"));
 }
 
-/* =========================================================
-   SECURITY UPGRADE — ADMIN SESSION VALIDATION
-   (ADDED ONLY — ORIGINAL CODE ABOVE NOT MODIFIED)
-   ========================================================= */
-
 async function verifyAdminAccess(){
 
 try{
 
 const response = await fetch(
-"https://blueroute-api-production-aaef.up.railway.app/api/admin/session-check",
+"https://blueroute-api-production-e23a.up.railway.app/api/admin/session-check",
 {
 method:"GET",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"authorization": ADMIN_TOKEN,
+"Authorization": ADMIN_SECRET
 }
 }
 );

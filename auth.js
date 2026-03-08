@@ -4,7 +4,9 @@ username: "admin",
 password: "BlueRoute@2026"
 };
 
-// ===== LOGIN FUNCTION =====
+/* ===== UPGRADE ADDED ===== */
+const ADMIN_SECRET = "27383832990019283872";
+
 function login() {
 
 const user = document.getElementById("username").value;
@@ -13,17 +15,14 @@ const remember = document.getElementById("rememberMe")?.checked;
 
 if (user === AUTH_CONFIG.username && pass === AUTH_CONFIG.password) {
 
-// Normal session login
 sessionStorage.setItem("brx_auth", "true");
 
-// If Remember Me is checked → persist login
 if (remember) {
-  const expiry = new Date().getTime() + (30 * 24 * 60 * 60 * 1000); // 30 days
+  const expiry = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
   localStorage.setItem("brx_auth_persist", "true");
   localStorage.setItem("brx_auth_expiry", expiry);
 }
 
-// 🔧 UPGRADE: redirect to shipment manager (main admin dashboard)
 window.location.href = "shipments.html";
 
 } else {
@@ -31,22 +30,18 @@ document.getElementById("error").innerText = "Invalid credentials";
 }
 }
 
-// ===== PROTECTION FUNCTION =====
 function protectPage() {
 
 const sessionAuth = sessionStorage.getItem("brx_auth");
 
-// Check persistent login
 const persistentAuth = localStorage.getItem("brx_auth_persist");
 const expiry = localStorage.getItem("brx_auth_expiry");
 
 if (persistentAuth === "true" && expiry) {
 if (new Date().getTime() < parseInt(expiry)) {
-// Restore session automatically
 sessionStorage.setItem("brx_auth", "true");
 return;
 } else {
-// Expired → clean up
 localStorage.removeItem("brx_auth_persist");
 localStorage.removeItem("brx_auth_expiry");
 }
@@ -57,7 +52,6 @@ window.location.href = "login.html";
 }
 }
 
-// ===== LOGOUT FUNCTION =====
 function logout() {
 sessionStorage.removeItem("brx_auth");
 localStorage.removeItem("brx_auth_persist");
@@ -65,21 +59,21 @@ localStorage.removeItem("brx_auth_expiry");
 window.location.href = "login.html";
 }
 
-/* =========================================================
-   SECURITY UPGRADE — SERVER SESSION VERIFICATION
-   (ADDED ONLY — ORIGINAL CODE ABOVE NOT MODIFIED)
-   ========================================================= */
-
 async function verifyAdminSession(){
 
 try{
 
+const token = sessionStorage.getItem("brx_admin_token");
+
 const response = await fetch(
-"https://blueroute-api-production-3ce5.up.railway.app/api/admin/session-check",
+"https://blueroute-api-production-e23a.up.railway.app/api/admin/session-check",
 {
 method:"GET",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"authorization": token,
+/* ===== UPGRADE ADDED ===== */
+"Authorization": ADMIN_SECRET
 }
 }
 );
@@ -94,10 +88,6 @@ console.warn("Session verification failed");
 }
 
 }
-
-/* =========================================================
-   AUTOMATIC VERIFICATION ON ADMIN PAGE LOAD
-   ========================================================= */
 
 if(typeof window !== "undefined"){
 window.addEventListener("load", function(){
@@ -114,13 +104,6 @@ verifyAdminSession();
 });
 }
 
-/* =========================================================
-   🔐 ADMIN TOKEN SYSTEM (SECURE UPGRADE — ADDED ONLY)
-   ========================================================= */
-
-/*
-Stores admin token returned by backend login
-*/
 function storeAdminToken(token){
 try{
 sessionStorage.setItem("brx_admin_token", token);
@@ -129,16 +112,10 @@ console.warn("Token storage failed");
 }
 }
 
-/*
-Retrieves admin token
-*/
 function getAdminToken(){
 return sessionStorage.getItem("brx_admin_token");
 }
 
-/*
-Attach token automatically to all API calls
-*/
 const ORIGINAL_FETCH = window.fetch;
 
 window.fetch = function(url, options = {}){
@@ -152,13 +129,14 @@ options.headers["authorization"] = token;
 }
 }
 
+/* ===== UPGRADE ADDED ===== */
+if(!options.headers["Authorization"]){
+options.headers["Authorization"] = ADMIN_SECRET;
+}
+
 return ORIGINAL_FETCH(url, options);
 
 };
-
-/* =========================================================
-   🔐 AUTO TOKEN DETECTION AFTER LOGIN
-   ========================================================= */
 
 (function(){
 
@@ -174,7 +152,7 @@ const username = document.getElementById("username").value;
 const password = document.getElementById("password").value;
 
 const response = await fetch(
-"https://blueroute-api-production-3ce5.up.railway.app/api/admin/login",
+"https://blueroute-api-production-e23a.up.railway.app/api/admin/login",
 {
 method:"POST",
 headers:{
@@ -205,11 +183,6 @@ return originalSecureLogin();
 
 })();
 
-/* =========================================================
-   🔐 VERIFY SESSION TOKEN INJECTION (UPGRADE ADDED)
-   Ensures session-check request includes admin token
-   ========================================================= */
-
 (function(){
 
 const originalVerify = verifyAdminSession;
@@ -221,12 +194,14 @@ try{
 const token = sessionStorage.getItem("brx_admin_token");
 
 const response = await fetch(
-"https://blueroute-api-production-3ce5.up.railway.app/api/admin/session-check",
+"https://blueroute-api-production-e23a.up.railway.app/api/admin/session-check",
 {
 method:"GET",
 headers:{
 "Content-Type":"application/json",
-"authorization": token
+"authorization": token,
+/* ===== UPGRADE ADDED ===== */
+"Authorization": ADMIN_SECRET
 }
 }
 );
@@ -244,17 +219,12 @@ console.warn("Session verification failed");
 
 })();
 
-/* =========================================
-BACKEND LOGIN MODE PATCH
-========================================= */
-
 (function(){
 
 const originalLogin = window.login;
 
 window.login = function(){
 
-// if backend token exists, skip old credential check
 const token = sessionStorage.getItem("brx_admin_token");
 
 if(token){
@@ -263,7 +233,6 @@ window.location.href="shipments.html";
 return;
 }
 
-// fallback to original login
 return originalLogin();
 
 };

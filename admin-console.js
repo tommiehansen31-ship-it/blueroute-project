@@ -85,6 +85,14 @@ const data = await response.json();
 
 if(data.success){
 alert("Shipment created. Tracking number: " + data.trackingNumber);
+
+/* ===== UPGRADE ADDED (DISPLAY RESULT) ===== */
+const resultBox = document.getElementById("result");
+if(resultBox){
+resultBox.innerHTML =
+"✅ Shipment Created<br>Tracking Number: <b>" + data.trackingNumber + "</b>";
+}
+
 }else{
 alert("Error creating shipment");
 }
@@ -133,6 +141,19 @@ const table = document.getElementById("shipmentTable");
 if(!table) return;
 
 table.innerHTML = "";
+
+/* ===== UPGRADE ADDED (EMPTY TABLE MESSAGE) ===== */
+
+if(!shipments || shipments.length === 0){
+table.innerHTML = `
+<tr>
+<td colspan="4" style="text-align:center;color:#888;">
+No shipments found
+</td>
+</tr>
+`;
+return;
+}
 
 shipments.forEach(function(shipment){
 
@@ -223,4 +244,4 @@ window.onload = function(){
 
 loadShipments();
 
-}
+};

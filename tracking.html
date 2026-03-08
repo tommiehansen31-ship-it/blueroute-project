@@ -57,8 +57,6 @@
       margin-bottom:10px;
     }
 
-    /* ======== NEW PROFESSIONAL TIMELINE UPGRADE (ADDED ONLY) ======== */
-
     .timeline {
       position: relative;
       margin-top: 20px;
@@ -108,8 +106,6 @@
       font-size: 13px;
       color: #374151;
     }
-
-    /* ======== HORIZONTAL STATUS PROGRESS BAR (ADDED ONLY) ======== */
 
     .progress-container {
       display: flex;
@@ -161,10 +157,6 @@
       margin: auto;
     }
 
-    /* =======================================================
-       ENTERPRISE TRACKING UI POLISH (APPENDED ONLY)
-       ======================================================= */
-
     .container h2{
       font-size:26px;
       margin-bottom:20px;
@@ -190,10 +182,6 @@
       transition:.2s;
       box-shadow:0 6px 18px rgba(0,0,0,0.08);
     }
-
-    /* =======================================================
-       DHL / FEDEX LEVEL SEARCH BAR POLISH (APPENDED ONLY)
-       ======================================================= */
 
     .container{
       transition:all .2s ease;
@@ -229,28 +217,18 @@
 
 <script>
 
-/* =========================================================
-   🔧 API DOMAIN CORRECTION (UPGRADE ADDED)
-   Automatically switches old Railway deployment URL
-   ========================================================= */
-
 function correctApiDomain(url){
 
-if(url.includes("aaef.up.railway.app")){
+if(url.includes("e23a.up.railway.app")){
 return url.replace(
-"aaef.up.railway.app",
-"3ce5.up.railway.app"
+"e23a.up.railway.app",
+"e23a.up.railway.app"
 );
 }
 
 return url;
 
 }
-
-/* =========================================================
-   🔄 SAFE FETCH WRAPPER (UPGRADE ADDED)
-   Handles Railway cold-start delays
-   ========================================================= */
 
 async function safeFetch(url){
 
@@ -272,8 +250,7 @@ return fetch(url);
 
 }
 
-/* ======== PRODUCTION API UPGRADE (ONLY CHANGE MADE) ======== */
-const SCRIPT_URL = "https://blueroute-api-production-aaef.up.railway.app/api/track/";
+const SCRIPT_URL = "https://blueroute-api-production-e23a.up.railway.app/api/track/";
 
 function trackShipment() {
 
@@ -288,8 +265,6 @@ function trackShipment() {
           "<p>Tracking number not found.</p>";
         return;
       }
-
-      /* ======== SQL RESPONSE MAPPING (ADDED ONLY — NOTHING REMOVED) ======== */
 
       const shipment = data.shipment;
       const scanHistory = data.scan_history.map(scan =>
@@ -328,8 +303,6 @@ function trackShipment() {
     });
 }
 
-/* ======== NEW PROFESSIONAL TIMELINE FUNCTION (ADDED ONLY) ======== */
-
 function renderTimeline(scanHistory) {
 
   if (!scanHistory) return "<p>No updates yet.</p>";
@@ -364,8 +337,6 @@ function renderTimeline(scanHistory) {
 
   return html;
 }
-
-/* ======== NEW PROGRESS BAR FUNCTION (ADDED ONLY) ======== */
 
 function renderProgress(currentStatus) {
 
