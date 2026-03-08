@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BlueRoute Admin Console</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:#f5f7fb;
+}
+
+header{
+background:#0a3d91;
+color:white;
+padding:15px;
+font-size:20px;
+}
+
+nav{
+background:#ffffff;
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+nav button{
+margin-right:10px;
+padding:8px 12px;
+cursor:pointer;
+}
+
+section{
+padding:20px;
+display:none;
+}
+
+section.active{
+display:block;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+table th, table td{
+border:1px solid #ddd;
+padding:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+BlueRoute Admin Console
+</header>
+
+<nav>
+<button onclick="showSection('create')">Create Shipment</button>
+<button onclick="showSection('list')">All Shipments</button>
+<button onclick="showSection('update')">Update Status</button>
+</nav>
+
+<section id="create" class="active">
+
+<h2>Create Shipment</h2>
+
+<form id="createShipmentForm">
+
+<input id="tracking" placeholder="Tracking Number"><br><br>
+
+<input id="origin" placeholder="Origin"><br><br>
+
+<input id="destination" placeholder="Destination"><br><br>
+
+<button type="submit">Create Shipment</button>
+
+</form>
+
+</section>
+
+<section id="list">
+
+<h2>Shipment List</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Tracking</th>
+<th>Origin</th>
+<th>Destination</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="shipmentTable"></tbody>
+
+</table>
+
+</section>
+
+<section id="update">
+
+<h2>Update Shipment Status</h2>
+
+<input id="updateTracking" placeholder="Tracking Number"><br><br>
+
+<select id="statusSelect">
+<option>Ordered</option>
+<option>Dispatched</option>
+<option>In Transit</option>
+<option>Customs</option>
+<option>Out for Delivery</option>
+<option>Delivered</option>
+</select>
+
+<button onclick="updateShipment()">Update</button>
+
+</section>
+
+<script src="admin-console.js"></script>
+
+<script>
+
+function showSection(section){
+
+document.querySelectorAll("section").forEach(s=>{
+s.classList.remove("active")
+})
+
+document.getElementById(section).classList.add("active")
+
+}
+
+</script>
+
+</body>
+</html>
