@@ -1,4 +1,10 @@
-const API = "https://blueroute-api-production-e23a.up.railway.app";
+/* =================================
+API CONFIG
+================================= */
+
+if (typeof API === "undefined") {
+var API = "https://blueroute-api-production-e23a.up.railway.app";
+}
 
 /* =================================
 CREATE SHIPMENT
@@ -6,9 +12,9 @@ CREATE SHIPMENT
 
 const createForm = document.getElementById("createShipmentForm");
 
-if(createForm){
+if (createForm) {
 
-createForm.addEventListener("submit", async function(e){
+createForm.addEventListener("submit", async function (e) {
 
 e.preventDefault();
 
@@ -22,18 +28,18 @@ const destination = document.getElementById("destination").value;
 
 const token = sessionStorage.getItem("br_token");
 
-try{
+try {
 
-const response = await fetch(API + "/api/admin/create-shipment",{
+const response = await fetch(API + "/api/admin/create-shipment", {
 
-method:"POST",
+method: "POST",
 
-headers:{
-"Content-Type":"application/json",
+headers: {
+"Content-Type": "application/json",
 authorization: token
 },
 
-body:JSON.stringify({
+body: JSON.stringify({
 senderName,
 senderEmail,
 receiverName,
@@ -46,14 +52,14 @@ destination
 
 const data = await response.json();
 
-if(data.success){
+if (data.success) {
 alert("Shipment created. Tracking: " + data.trackingNumber);
 loadShipments();
-}else{
+} else {
 alert("Error creating shipment");
 }
 
-}catch(err){
+} catch (err) {
 
 alert("Server error");
 
@@ -67,44 +73,44 @@ alert("Server error");
 LOAD SHIPMENTS
 ================================= */
 
-async function loadShipments(){
+async function loadShipments() {
 
 const token = sessionStorage.getItem("br_token");
 
-try{
+try {
 
-const response = await fetch(API + "/api/admin/shipments",{
-headers:{
+const response = await fetch(API + "/api/admin/shipments", {
+headers: {
 authorization: token
 }
 });
 
 const shipments = await response.json();
 
-const table = document.getElementById("shipmentTable");
+const tableBody = document.getElementById("shipmentTable");
 
-if(!table) return;
+if (!tableBody) return;
 
-table.innerHTML="";
+tableBody.innerHTML = "";
 
-shipments.forEach(function(s){
+shipments.forEach(function (s) {
 
-const row=document.createElement("tr");
+const row = document.createElement("tr");
 
-row.innerHTML=`
+row.innerHTML = `
 <td>${s.tracking}</td>
 <td>${s.origin}</td>
 <td>${s.destination}</td>
 <td>${s.status}</td>
 `;
 
-table.appendChild(row);
+tableBody.appendChild(row);
 
 });
 
-}catch(err){
+} catch (err) {
 
-console.error("Failed loading shipments");
+console.error("Failed loading shipments", err);
 
 }
 
@@ -114,43 +120,43 @@ console.error("Failed loading shipments");
 UPDATE SHIPMENT
 ================================= */
 
-async function updateShipment(){
+async function updateShipment() {
 
 const token = sessionStorage.getItem("br_token");
 
 const trackingNumber = document.getElementById("updateTracking").value;
 const status = document.getElementById("statusSelect").value;
 
-try{
+try {
 
-const response = await fetch(API + "/api/admin/update-shipment",{
+const response = await fetch(API + "/api/admin/update-shipment", {
 
-method:"POST",
+method: "POST",
 
-headers:{
-"Content-Type":"application/json",
+headers: {
+"Content-Type": "application/json",
 authorization: token
 },
 
-body:JSON.stringify({
+body: JSON.stringify({
 trackingNumber,
 status,
-location:"Admin Update",
-remark:"Status updated"
+location: "Admin Update",
+remark: "Status updated"
 })
 
 });
 
 const data = await response.json();
 
-if(data.success){
+if (data.success) {
 alert("Shipment updated");
 loadShipments();
-}else{
+} else {
 alert("Update failed");
 }
 
-}catch(err){
+} catch (err) {
 
 alert("Server error");
 
@@ -162,6 +168,6 @@ alert("Server error");
 PAGE LOAD
 ================================= */
 
-window.onload=function(){
+window.onload = function () {
 loadShipments();
 };
