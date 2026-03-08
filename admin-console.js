@@ -1,12 +1,4 @@
 /* =================================
-API CONFIG
-================================= */
-
-if (typeof API === "undefined") {
-var API = "https://blueroute-api-production-e23a.up.railway.app";
-}
-
-/* =================================
 CREATE SHIPMENT
 ================================= */
 
@@ -31,14 +23,11 @@ const token = sessionStorage.getItem("br_token");
 try {
 
 const response = await fetch(API + "/api/admin/create-shipment", {
-
 method: "POST",
-
 headers: {
 "Content-Type": "application/json",
 authorization: token
 },
-
 body: JSON.stringify({
 senderName,
 senderEmail,
@@ -47,7 +36,6 @@ receiverEmail,
 origin,
 destination
 })
-
 });
 
 const data = await response.json();
@@ -60,9 +48,7 @@ alert("Error creating shipment");
 }
 
 } catch (err) {
-
 alert("Server error");
-
 }
 
 });
