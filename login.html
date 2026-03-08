@@ -1,164 +1,121 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>BlueRoute Express - Admin Login</title>
+<title>BlueRoute Admin Login</title>
 
-  <style>
-    body {
-      margin:0;
-      font-family: Arial;
-      background: linear-gradient(135deg,#0d6efd,#003f88);
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-    }
+<style>
 
-    .login-card {
-      background:white;
-      padding:40px;
-      width:350px;
-      border-radius:10px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.2);
-      text-align:center;
-    }
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#0d6efd,#003f88);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+margin:0;
+}
 
-    h2 {
-      margin-bottom:25px;
-    }
+.card{
+background:white;
+padding:40px;
+width:350px;
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+text-align:center;
+}
 
-    input {
-      width:100%;
-      padding:12px;
-      margin-bottom:15px;
-      border:1px solid #ccc;
-      border-radius:5px;
-    }
+input{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border:1px solid #ccc;
+border-radius:5px;
+}
 
-    button {
-      width:100%;
-      padding:12px;
-      background:#0d6efd;
-      color:white;
-      border:none;
-      border-radius:5px;
-      font-size:16px;
-      cursor:pointer;
-    }
+button{
+width:100%;
+padding:12px;
+background:#0d6efd;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
 
-    button:hover {
-      background:#084298;
-    }
+.error{
+color:red;
+margin-top:10px;
+}
 
-    .error {
-      color:red;
-      margin-top:10px;
-      font-size:14px;
-    }
+</style>
 
-    .remember {
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      margin-bottom:15px;
-      font-size:14px;
-      color:#333;
-    }
-
-    .remember input {
-      width:auto;
-      margin-right:8px;
-    }
-  </style>
 </head>
 
 <body>
 
-<div class="login-card">
-  <h2>Admin Login</h2>
+<div class="card">
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
+<h2>Admin Login</h2>
 
-  <div class="remember">
-    <input type="checkbox" id="rememberMe">
-    <label for="rememberMe">Remember Me</label>
-  </div>
+<form id="loginForm">
 
-  <button id="loginBtn" onclick="secureLogin()">Login</button>
+<input id="username" placeholder="Username" required>
+<input id="password" type="password" placeholder="Password" required>
 
-  <div id="error" class="error"></div>
+<button type="submit">Login</button>
+
+</form>
+
+<div id="error" class="error"></div>
+
 </div>
-
-<script src="auth.js"></script>
 
 <script>
 
-/* ===== UPGRADE ADDED ===== */
-const API_BASE = "https://blueroute-api-production-e23a.up.railway.app";
+const API="https://blueroute-api-production-e23a.up.railway.app";
 
-/* =========================================================
-   SECURITY UPGRADE — SERVER LOGIN VALIDATION
-   ========================================================= */
+document.getElementById("loginForm").addEventListener("submit", async function(e){
 
-async function secureLogin(){
+e.preventDefault();
 
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+const username=document.getElementById("username").value;
+const password=document.getElementById("password").value;
 
-/* ===== UPGRADE ADDED ===== */
-const loginBtn = document.getElementById("loginBtn");
-loginBtn.disabled = true;
+try{
 
-  try{
+const res=await fetch(API+"/api/admin/login",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+username:username,
+password:password
+})
+});
 
-    const response = await fetch(API_BASE + "/api/admin/login",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":ADMIN_SECRET,
-        "authorization":ADMIN_SECRET
-      },
-      body:JSON.stringify({
-        username:username,
-        password:password
-      })
-    });
+const data=await res.json();
 
-    const data = await response.json();
+if(data.success){
 
-    if(data.success){
+sessionStorage.setItem("br_token",data.token);
 
-      sessionStorage.setItem("brx_admin_token", data.token);
+window.location.href="admin-console.html";
 
-      window.location.href = "admin-console.html";
+}else{
 
-    }else{
-      document.getElementById("error").innerText="Invalid credentials";
-    }
-
-  }catch(err){
-    document.getElementById("error").innerText="Server unavailable";
-  }
-
-/* ===== UPGRADE ADDED ===== */
-loginBtn.disabled = false;
+document.getElementById("error").innerText="Invalid credentials";
 
 }
 
-/* =========================================================
-   TOKEN RECOVERY SYSTEM
-   ========================================================= */
+}catch(err){
 
-(function(){
+document.getElementById("error").innerText="Server error";
 
-const storedToken = sessionStorage.getItem("brx_admin_token");
-
-if(storedToken){
-console.log("Admin token restored");
 }
 
-})();
+});
 
 </script>
 
