@@ -1,5 +1,5 @@
 const API_BASE = "https://blueroute-api-production-e23a.up.railway.app";
-const ADMIN_SECRET = "BlueRoute@2026";
+const ADMIN_SECRET = "27383832990019283872";
 
 
 /* =================================
