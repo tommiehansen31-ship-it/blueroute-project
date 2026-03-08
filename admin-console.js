@@ -45,8 +45,6 @@ const data = await response.json();
 if (data.success) {
 alert("Shipment created. Tracking: " + data.trackingNumber);
 loadShipments();
-} else {
-alert("Error creating shipment");
 }
 
 } catch (err) {
@@ -65,30 +63,15 @@ async function loadShipments() {
 
 const token = sessionStorage.getItem("br_token");
 
-if(!token){
-console.error("No admin token found");
-return;
-}
-
 try {
 
 const response = await fetch(API + "/api/admin/shipments", {
-headers: {
-Authorization: token
-}
+headers:{Authorization: token}
 });
 
 const data = await response.json();
 
-if(!Array.isArray(data)){
-console.error("Unexpected API response:", data);
-return;
-}
-
 const tableBody = document.getElementById("shipmentTable");
-
-if (!tableBody) return;
-
 tableBody.innerHTML = "";
 
 data.forEach(function (s) {
@@ -102,14 +85,9 @@ row.innerHTML = `
 <td>${s.status}</td>
 `;
 
-/* CLICK ROW TO AUTO-FILL UPDATE FORM */
-
-row.onclick = function(){
-
-document.getElementById("updateTracking").value = s.tracking;
-
+row.onclick=function(){
+document.getElementById("updateTracking").value=s.tracking;
 showSection("update");
-
 };
 
 tableBody.appendChild(row);
@@ -135,18 +113,16 @@ const token = sessionStorage.getItem("br_token");
 const trackingNumber = document.getElementById("updateTracking").value;
 const status = document.getElementById("statusSelect").value;
 
-try {
-
 const response = await fetch(API + "/api/admin/update-shipment", {
 
 method: "POST",
 
-headers: {
-"Content-Type": "application/json",
+headers:{
+"Content-Type":"application/json",
 Authorization: token
 },
 
-body: JSON.stringify({
+body:JSON.stringify({
 trackingNumber,
 status
 })
@@ -155,17 +131,11 @@ status
 
 const data = await response.json();
 
-if (data.success) {
+if(data.success){
 alert("Shipment updated");
 loadShipments();
-} else {
+}else{
 alert("Update failed");
-}
-
-} catch (err) {
-
-alert("Server error");
-
 }
 
 }
@@ -174,6 +144,6 @@ alert("Server error");
 PAGE LOAD
 ================================= */
 
-window.onload = function () {
+window.onload=function(){
 loadShipments();
 };

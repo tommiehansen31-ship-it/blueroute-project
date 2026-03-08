@@ -14,7 +14,7 @@ try{
 const response = await fetch(API + "/api/admin/session-check",{
 method:"GET",
 headers:{
-authorization: token
+Authorization: token
 }
 });
 
