@@ -17,6 +17,13 @@ e.preventDefault();
 const origin = document.getElementById("origin").value;
 const destination = document.getElementById("destination").value;
 
+/* ===== UPGRADE ADDED (READ ALL FIELDS) ===== */
+
+const senderName = document.getElementById("senderName").value;
+const senderEmail = document.getElementById("senderEmail").value;
+const receiverName = document.getElementById("receiverName").value;
+const receiverEmail = document.getElementById("receiverEmail").value;
+
 try{
 
 const response = await fetch(API_BASE + "/api/admin/create-shipment",{
@@ -29,6 +36,10 @@ headers:{
 },
 
 body:JSON.stringify({
+senderName:senderName,
+senderEmail:senderEmail,
+receiverName:receiverName,
+receiverEmail:receiverEmail,
 origin:origin,
 destination:destination
 })

@@ -40,6 +40,13 @@ section.active{
 display:block;
 }
 
+input, textarea{
+width:100%;
+padding:10px;
+margin-bottom:12px;
+border:1px solid #ccc;
+}
+
 table{
 width:100%;
 border-collapse:collapse;
@@ -65,21 +72,55 @@ BlueRoute Admin Console
 <button onclick="showSection('update')">Update Status</button>
 </nav>
 
+
+<!-- CREATE SHIPMENT -->
+
 <section id="create" class="active">
 
 <h2>Create Shipment</h2>
 
 <form id="createShipmentForm">
 
-<input id="origin" placeholder="Origin"><br><br>
+<h3>Sender Information</h3>
+<input id="senderName" placeholder="Sender Name">
+<input id="senderAddress" placeholder="Sender Address">
+<input id="senderPhone" placeholder="Sender Phone">
+<input id="senderEmail" placeholder="Sender Email">
 
-<input id="destination" placeholder="Destination"><br><br>
+<h3>Receiver Information</h3>
+<input id="receiverName" placeholder="Receiver Name">
+<input id="receiverAddress" placeholder="Receiver Address">
+<input id="receiverPhone" placeholder="Receiver Phone">
+<input id="receiverEmail" placeholder="Receiver Email">
+
+<h3>Shipment Route</h3>
+<input id="origin" placeholder="Origin">
+<input id="destination" placeholder="Destination">
+
+<h3>Shipment Details</h3>
+<input id="shipmentName" placeholder="Shipment Name / Description">
+<input id="weight" placeholder="Weight (kg)">
+<input id="itemsSent" placeholder="Items Sent">
+<input id="boxCount" placeholder="Number of Boxes">
+
+<label>Package Sent Date</label>
+<input type="date" id="sentDate">
+
+<label>Estimated Delivery Date</label>
+<input type="date" id="estimatedDelivery">
+
+<textarea id="remarks" placeholder="Remarks"></textarea>
 
 <button type="submit">Create Shipment</button>
 
 </form>
 
+<div id="result"></div>
+
 </section>
+
+
+<!-- SHIPMENT LIST -->
 
 <section id="list">
 
@@ -102,14 +143,17 @@ BlueRoute Admin Console
 
 </section>
 
+
+<!-- UPDATE SHIPMENT -->
+
 <section id="update">
 
 <h2>Update Shipment Status</h2>
 
-<input id="updateTracking" placeholder="Tracking Number"><br><br>
+<input id="updateTracking" placeholder="Tracking Number">
 
 <select id="statusSelect">
-<option>Ordered</option>
+<option>Shipment Created</option>
 <option>Dispatched</option>
 <option>In Transit</option>
 <option>Customs</option>
