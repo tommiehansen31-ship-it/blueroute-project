@@ -63,6 +63,11 @@ async function loadShipments() {
 
 const token = sessionStorage.getItem("br_token");
 
+if(!token){
+console.error("No admin token found");
+return;
+}
+
 try {
 
 const response = await fetch(API + "/api/admin/shipments", {
@@ -71,7 +76,12 @@ authorization: token
 }
 });
 
-const shipments = await response.json();
+const data = await response.json();
+
+if(!Array.isArray(data)){
+console.error("Unexpected API response:", data);
+return;
+}
 
 const tableBody = document.getElementById("shipmentTable");
 
@@ -79,7 +89,7 @@ if (!tableBody) return;
 
 tableBody.innerHTML = "";
 
-shipments.forEach(function (s) {
+data.forEach(function (s) {
 
 const row = document.createElement("tr");
 
@@ -101,7 +111,6 @@ console.error("Failed loading shipments", err);
 }
 
 }
-
 /* =================================
 UPDATE SHIPMENT
 ================================= */
