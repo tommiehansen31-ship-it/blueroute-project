@@ -60,6 +60,11 @@ border:1px solid #ddd;
 padding:8px;
 }
 
+table tr:hover{
+background:#f1f4ff;
+cursor:pointer;
+}
+
 button{
 padding:10px 14px;
 cursor:pointer;
@@ -185,8 +190,6 @@ Logout
 
 <script>
 
-const API="https://blueroute-api-production-e23a.up.railway.app";
-
 function showSection(section){
 
 document.querySelectorAll("section").forEach(s=>{
@@ -194,60 +197,6 @@ s.classList.remove("active")
 })
 
 document.getElementById(section).classList.add("active")
-
-}
-
-
-/* =========================
-UPDATE SHIPMENT STATUS
-========================= */
-
-async function updateShipment(){
-
-const tracking=document.getElementById("updateTracking").value.trim();
-const status=document.getElementById("statusSelect").value;
-
-if(!tracking){
-alert("Enter tracking number");
-return;
-}
-
-try{
-
-const res=await fetch(API+"/api/admin/update-shipment",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json",
-"Authorization":localStorage.getItem("adminToken")
-},
-
-body:JSON.stringify({
-trackingNumber:tracking,
-status:status
-})
-
-});
-
-const data=await res.json();
-
-if(data.success){
-
-alert("Shipment updated successfully");
-
-}else{
-
-alert("Update failed");
-
-}
-
-}catch(err){
-
-console.error(err);
-alert("Server error");
-
-}
 
 }
 

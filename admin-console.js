@@ -1,3 +1,5 @@
+const API="https://blueroute-api-production-e23a.up.railway.app";
+
 /* =================================
 CREATE SHIPMENT
 ================================= */
@@ -26,7 +28,7 @@ const response = await fetch(API + "/api/admin/create-shipment", {
 method: "POST",
 headers: {
 "Content-Type": "application/json",
-authorization: token
+Authorization: token
 },
 body: JSON.stringify({
 senderName,
@@ -72,7 +74,7 @@ try {
 
 const response = await fetch(API + "/api/admin/shipments", {
 headers: {
-authorization: token
+Authorization: token
 }
 });
 
@@ -100,6 +102,16 @@ row.innerHTML = `
 <td>${s.status}</td>
 `;
 
+/* CLICK ROW TO AUTO-FILL UPDATE FORM */
+
+row.onclick = function(){
+
+document.getElementById("updateTracking").value = s.tracking;
+
+showSection("update");
+
+};
+
 tableBody.appendChild(row);
 
 });
@@ -111,6 +123,7 @@ console.error("Failed loading shipments", err);
 }
 
 }
+
 /* =================================
 UPDATE SHIPMENT
 ================================= */
@@ -130,14 +143,12 @@ method: "POST",
 
 headers: {
 "Content-Type": "application/json",
-authorization: token
+Authorization: token
 },
 
 body: JSON.stringify({
 trackingNumber,
-status,
-location: "Admin Update",
-remark: "Status updated"
+status
 })
 
 });
