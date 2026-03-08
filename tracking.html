@@ -1,51 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Track Shipment - BlueRoute Express</title>
+<meta charset="UTF-8">
+<title>BlueRoute Tracking</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#f4f6f8;
+background:#f5f7fb;
+margin:0;
 padding:40px;
 }
 
 .container{
-max-width:800px;
+max-width:700px;
 margin:auto;
 background:white;
-padding:25px;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+h1{
+margin-top:0;
+color:#003399;
+}
+
+.summary{
+margin-bottom:30px;
+padding:15px;
+background:#f1f4ff;
 border-radius:8px;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+.timeline{
+border-left:3px solid #003399;
+padding-left:20px;
+margin-top:20px;
+}
+
+.event{
+margin-bottom:25px;
+position:relative;
+}
+
+.event:before{
+content:"";
+width:12px;
+height:12px;
+background:#003399;
+border-radius:50%;
+position:absolute;
+left:-27px;
+top:4px;
+}
+
+.event-location{
+font-weight:bold;
+}
+
+.event-time{
+color:#777;
+font-size:13px;
 }
 
 input{
-width:70%;
-padding:12px;
-border:1px solid #ccc;
+padding:10px;
+width:250px;
 }
 
 button{
-padding:12px 20px;
-background:#007bff;
-color:white;
-border:none;
+padding:10px 15px;
 cursor:pointer;
-}
-
-.result-card{
-margin-top:25px;
-padding:20px;
-border:1px solid #eee;
-border-radius:8px;
-background:#fafafa;
-}
-
-.status{
-font-weight:bold;
-color:#007bff;
-margin-bottom:10px;
 }
 
 </style>
@@ -55,10 +82,10 @@ margin-bottom:10px;
 
 <div class="container">
 
-<h2>Track Your Shipment</h2>
+<h1>Track Shipment</h1>
 
-<input id="trackingInput" placeholder="Enter Tracking Number">
-<button onclick="trackShipment()">Track</button>
+<input id="trackingInput" placeholder="Enter tracking number">
+<button onclick="track()">Track</button>
 
 <div id="result"></div>
 
@@ -68,54 +95,71 @@ margin-bottom:10px;
 
 const API="https://blueroute-api-production-e23a.up.railway.app";
 
-async function trackShipment(){
+async function track(){
 
-const tracking=document.getElementById("trackingInput").value;
+const number=document.getElementById("trackingInput").value.trim();
 
-if(!tracking){
-alert("Enter tracking number");
+if(!number){
 return;
 }
 
-try{
+const res=await fetch(API+"/api/track/"+number);
+const data=await res.json();
 
-const response=await fetch(API+"/api/track/"+tracking);
-
-const data=await response.json();
+const result=document.getElementById("result");
 
 if(!data.found){
-
-document.getElementById("result").innerHTML="<p>Tracking number not found.</p>";
+result.innerHTML="<p>Shipment not found</p>";
 return;
-
 }
 
 const shipment=data.shipment;
+const scans=data.scan_history;
 
-document.getElementById("result").innerHTML=`
+let timeline="";
 
-<div class="result-card">
+scans.forEach(scan=>{
 
-<h3>${shipment.tracking_number}</h3>
+timeline+=`
+<div class="event">
+<div class="event-location">${scan.location}</div>
+<div>${scan.remark}</div>
+<div class="event-time">${new Date(scan.scanned_at).toLocaleString()}</div>
+</div>
+`;
 
-<div class="status">${shipment.status}</div>
+});
 
-<p><strong>Origin:</strong> ${shipment.origin}</p>
+result.innerHTML=`
 
-<p><strong>Destination:</strong> ${shipment.destination}</p>
+<div class="summary">
 
-<p><strong>Last Updated:</strong> ${new Date(shipment.last_updated).toLocaleString()}</p>
+<p><strong>Tracking:</strong> ${shipment.tracking_number}</p>
 
+<p><strong>Status:</strong> ${shipment.status}</p>
+
+<p><strong>Route:</strong> ${shipment.origin} → ${shipment.destination}</p>
+
+</div>
+
+<h3>Shipment Timeline</h3>
+
+<div class="timeline">
+${timeline}
 </div>
 
 `;
 
-}catch(err){
-
-document.getElementById("result").innerHTML="<p>Tracking service unavailable.</p>";
-
 }
 
+/* Auto-load tracking number from URL */
+
+const params=new URLSearchParams(window.location.search);
+const tracking=params.get("track");
+
+if(tracking){
+document.getElementById("trackingInput").value=tracking;
+track();
 }
 
 </script>
