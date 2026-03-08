@@ -35,6 +35,12 @@ destination:destination
 
 });
 
+if(!response.ok){
+console.error("API ERROR:", response.status);
+alert("Server rejected request (" + response.status + ")");
+return;
+}
+
 const data = await response.json();
 
 if(data.success){
@@ -73,6 +79,11 @@ headers:{
 }
 
 });
+
+if(!response.ok){
+console.error("Shipment list error:", response.status);
+return;
+}
 
 const shipments = await response.json();
 
@@ -135,6 +146,11 @@ remark:"Status updated from admin console"
 })
 
 });
+
+if(!response.ok){
+alert("Server rejected update (" + response.status + ")");
+return;
+}
 
 const data = await response.json();
 
