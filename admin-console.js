@@ -24,6 +24,20 @@ const senderEmail = document.getElementById("senderEmail").value;
 const receiverName = document.getElementById("receiverName").value;
 const receiverEmail = document.getElementById("receiverEmail").value;
 
+/* ===== NEW FIELDS ADDED (ALIGN WITH admin.html) ===== */
+
+const senderAddress = document.getElementById("senderAddress")?.value;
+const senderPhone = document.getElementById("senderPhone")?.value;
+const receiverAddress = document.getElementById("receiverAddress")?.value;
+const receiverPhone = document.getElementById("receiverPhone")?.value;
+const shipmentName = document.getElementById("shipmentName")?.value;
+const weight = document.getElementById("weight")?.value;
+const itemsSent = document.getElementById("itemsSent")?.value;
+const boxCount = document.getElementById("boxCount")?.value;
+const sentDate = document.getElementById("sentDate")?.value;
+const estimatedDelivery = document.getElementById("estimatedDelivery")?.value;
+const remarks = document.getElementById("remarks")?.value;
+
 try{
 
 const response = await fetch(API_BASE + "/api/admin/create-shipment",{
@@ -32,7 +46,8 @@ method:"POST",
 
 headers:{
 "Content-Type":"application/json",
-"Authorization":ADMIN_SECRET
+"Authorization":ADMIN_SECRET,
+"authorization":ADMIN_SECRET
 },
 
 body:JSON.stringify({
@@ -41,7 +56,21 @@ senderEmail:senderEmail,
 receiverName:receiverName,
 receiverEmail:receiverEmail,
 origin:origin,
-destination:destination
+destination:destination,
+
+/* ===== ADDED FIELDS ===== */
+
+senderAddress:senderAddress,
+senderPhone:senderPhone,
+receiverAddress:receiverAddress,
+receiverPhone:receiverPhone,
+shipmentName:shipmentName,
+weight:weight,
+itemsSent:itemsSent,
+boxCount:boxCount,
+sentDate:sentDate,
+estimatedDelivery:estimatedDelivery,
+remarks:remarks
 })
 
 });
@@ -86,7 +115,8 @@ try{
 const response = await fetch(API_BASE + "/api/admin/shipments",{
 
 headers:{
-"Authorization":ADMIN_SECRET
+"Authorization":ADMIN_SECRET,
+"authorization":ADMIN_SECRET
 }
 
 });
@@ -146,7 +176,8 @@ method:"POST",
 
 headers:{
 "Content-Type":"application/json",
-"Authorization":ADMIN_SECRET
+"Authorization":ADMIN_SECRET,
+"authorization":ADMIN_SECRET
 },
 
 body:JSON.stringify({
