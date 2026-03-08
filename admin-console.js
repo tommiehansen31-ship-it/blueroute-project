@@ -1,5 +1,3 @@
-const API="https://blueroute-api-production-e23a.up.railway.app";
-
 /* =================================
 CREATE SHIPMENT
 ================================= */
@@ -72,6 +70,9 @@ headers:{Authorization: token}
 const data = await response.json();
 
 const tableBody = document.getElementById("shipmentTable");
+
+if(!tableBody) return;
+
 tableBody.innerHTML = "";
 
 data.forEach(function (s) {
