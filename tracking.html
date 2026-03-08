@@ -14,7 +14,7 @@ padding:40px;
 }
 
 .container{
-max-width:700px;
+max-width:800px;
 margin:auto;
 background:white;
 padding:30px;
@@ -34,10 +34,52 @@ background:#f1f4ff;
 border-radius:8px;
 }
 
+.progress{
+display:flex;
+justify-content:space-between;
+margin:30px 0;
+position:relative;
+}
+
+.progress:before{
+content:"";
+position:absolute;
+top:12px;
+left:0;
+width:100%;
+height:4px;
+background:#ddd;
+z-index:0;
+}
+
+.step{
+position:relative;
+z-index:1;
+text-align:center;
+flex:1;
+}
+
+.circle{
+width:25px;
+height:25px;
+border-radius:50%;
+background:#ddd;
+margin:auto;
+margin-bottom:5px;
+}
+
+.active .circle{
+background:#003399;
+}
+
+.step-label{
+font-size:12px;
+}
+
 .timeline{
 border-left:3px solid #003399;
 padding-left:20px;
-margin-top:20px;
+margin-top:30px;
 }
 
 .event{
@@ -95,6 +137,15 @@ cursor:pointer;
 
 const API="https://blueroute-api-production-e23a.up.railway.app";
 
+const steps=[
+"Shipment Created",
+"Dispatched",
+"In Transit",
+"Customs",
+"Out for Delivery",
+"Delivered"
+];
+
 async function track(){
 
 const number=document.getElementById("trackingInput").value.trim();
@@ -115,6 +166,27 @@ return;
 
 const shipment=data.shipment;
 const scans=data.scan_history;
+
+/* PROGRESS BAR */
+
+let progressHTML='<div class="progress">';
+
+let activeIndex=steps.indexOf(shipment.status);
+
+steps.forEach((step,i)=>{
+
+progressHTML+=`
+<div class="step ${i<=activeIndex?'active':''}">
+<div class="circle"></div>
+<div class="step-label">${step}</div>
+</div>
+`;
+
+});
+
+progressHTML+='</div>';
+
+/* TIMELINE */
 
 let timeline="";
 
@@ -142,6 +214,8 @@ result.innerHTML=`
 
 </div>
 
+${progressHTML}
+
 <h3>Shipment Timeline</h3>
 
 <div class="timeline">
@@ -152,14 +226,16 @@ ${timeline}
 
 }
 
-/* Auto-load tracking number from URL */
+/* AUTO LOAD FROM URL */
 
 const params=new URLSearchParams(window.location.search);
 const tracking=params.get("track");
 
 if(tracking){
+
 document.getElementById("trackingInput").value=tracking;
 track();
+
 }
 
 </script>
