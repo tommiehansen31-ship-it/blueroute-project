@@ -1,129 +1,154 @@
 const API_BASE = "https://blueroute-api-production-e23a.up.railway.app";
+const ADMIN_SECRET = "BlueRoute@2026";
 
 
-/* =========================
-   CREATE SHIPMENT
-========================= */
+/* =================================
+CREATE SHIPMENT
+================================= */
 
-const form = document.getElementById("createShipmentForm");
+const createForm = document.getElementById("createShipmentForm");
 
-if (form) {
-form.addEventListener("submit", async function (e) {
+if(createForm){
+
+createForm.addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-const tracking = document.getElementById("tracking").value;
 const origin = document.getElementById("origin").value;
 const destination = document.getElementById("destination").value;
 
-try {
+try{
 
-const response = await fetch(`${API_BASE}/create-shipment`, {
-method: "POST",
-headers: {
-"Content-Type": "application/json"
+const response = await fetch(API_BASE + "/api/admin/create-shipment",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+"Authorization":ADMIN_SECRET
 },
-body: JSON.stringify({
-tracking,
-origin,
-destination
+
+body:JSON.stringify({
+origin:origin,
+destination:destination
 })
+
 });
 
 const data = await response.json();
 
-alert(data.message || "Shipment created");
+if(data.success){
+alert("Shipment created. Tracking number: " + data.trackingNumber);
+}else{
+alert("Error creating shipment");
+}
 
 loadShipments();
 
-} catch (err) {
+}catch(err){
+
 alert("Error creating shipment");
 console.error(err);
+
 }
 
 });
+
 }
 
 
-/* =========================
-   LOAD SHIPMENTS
-========================= */
 
-async function loadShipments() {
+/* =================================
+LOAD SHIPMENTS
+================================= */
 
-try {
+async function loadShipments(){
 
-const response = await fetch(`${API_BASE}/shipments`);
+try{
+
+const response = await fetch(API_BASE + "/api/admin/shipments",{
+
+headers:{
+"Authorization":ADMIN_SECRET
+}
+
+});
+
 const shipments = await response.json();
 
 const table = document.getElementById("shipmentTable");
 
-if (!table) return;
+if(!table) return;
 
 table.innerHTML = "";
 
-shipments.forEach((s) => {
+shipments.forEach(function(shipment){
 
 const row = document.createElement("tr");
 
 row.innerHTML = `
-<td>${s.tracking}</td>
-<td>${s.origin}</td>
-<td>${s.destination}</td>
-<td>${s.status}</td>
+<td>${shipment.tracking}</td>
+<td>${shipment.origin}</td>
+<td>${shipment.destination}</td>
+<td>${shipment.status}</td>
 `;
 
 table.appendChild(row);
 
 });
 
-} catch (err) {
-console.error("Error loading shipments", err);
-}
+}catch(err){
+
+console.error("Failed to load shipments",err);
 
 }
 
+}
 
-/* =========================
-   UPDATE SHIPMENT STATUS
-========================= */
 
-async function updateShipment() {
 
-const tracking = document.getElementById("updateTracking").value;
+/* =================================
+UPDATE SHIPMENT
+================================= */
+
+async function updateShipment(){
+
+const trackingNumber = document.getElementById("updateTracking").value;
 const status = document.getElementById("statusSelect").value;
 
-if (!tracking) {
-alert("Enter a tracking number");
-return;
-}
+try{
 
-try {
+const response = await fetch(API_BASE + "/api/admin/update-shipment",{
 
-const response = await fetch(`${API_BASE}/update-status`, {
+method:"POST",
 
-method: "POST",
-
-headers: {
-"Content-Type": "application/json"
+headers:{
+"Content-Type":"application/json",
+"Authorization":ADMIN_SECRET
 },
 
-body: JSON.stringify({
-tracking,
-status
+body:JSON.stringify({
+trackingNumber:trackingNumber,
+status:status,
+location:"System Update",
+remark:"Status updated from admin console"
 })
 
 });
 
 const data = await response.json();
 
-alert(data.message || "Status updated");
+if(data.success){
+alert("Shipment updated");
+}else{
+alert("Update failed");
+}
 
 loadShipments();
 
-} catch (err) {
+}catch(err){
 
-alert("Error updating shipment");
+alert("Update failed");
 console.error(err);
 
 }
@@ -131,12 +156,13 @@ console.error(err);
 }
 
 
-/* =========================
-   INITIAL PAGE LOAD
-========================= */
 
-window.addEventListener("load", function () {
+/* =================================
+PAGE LOAD
+================================= */
+
+window.onload = function(){
 
 loadShipments();
 
-});
+}
