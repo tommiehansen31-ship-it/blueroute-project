@@ -12,7 +12,6 @@ return;
 try{
 
 const response = await fetch(API + "/api/admin/session-check",{
-method:"GET",
 headers:{
 Authorization: token
 }
@@ -34,11 +33,7 @@ window.location.href="login.html";
 
 window.addEventListener("load", function(){
 
-const protectedPage =
-window.location.pathname.includes("admin") ||
-window.location.pathname.includes("shipment");
-
-if(protectedPage){
+if(window.location.pathname.includes("admin")){
 verifyAdminSession();
 }
 
