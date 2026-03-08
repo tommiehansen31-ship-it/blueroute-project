@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <title>BlueRoute Admin Login</title>
 
@@ -61,7 +60,7 @@ margin-top:10px;
 <input id="username" placeholder="Username">
 <input id="password" type="password" placeholder="Password">
 
-<button onclick="login()">Login</button>
+<button id="loginBtn">Login</button>
 
 <div id="error" class="error"></div>
 
@@ -71,10 +70,10 @@ margin-top:10px;
 
 const API = "https://blueroute-api-production-e23a.up.railway.app";
 
-async function login(){
+document.getElementById("loginBtn").addEventListener("click", async function(){
 
-const username=document.getElementById("username").value;
-const password=document.getElementById("password").value;
+const username = document.getElementById("username").value;
+const password = document.getElementById("password").value;
 
 try{
 
@@ -84,8 +83,8 @@ headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({
-username:username,
-password:password
+username: username,
+password: password
 })
 });
 
@@ -93,23 +92,23 @@ const data = await response.json();
 
 if(data.success){
 
-sessionStorage.setItem("br_token",data.token);
+sessionStorage.setItem("br_token", data.token);
 
-window.location.href="admin-console.html";
+window.location.href = "admin-console.html";
 
 }else{
 
-document.getElementById("error").innerText="Invalid credentials";
+document.getElementById("error").innerText = "Invalid credentials";
 
 }
 
 }catch(err){
 
-document.getElementById("error").innerText="Server error";
+document.getElementById("error").innerText = "Server error";
 
 }
 
-}
+});
 
 </script>
 
