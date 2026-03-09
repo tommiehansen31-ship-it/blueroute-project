@@ -5,7 +5,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-const API_URL = "https://blueroute-api-production-3ce5.up.railway.app/api/track";
+const API_URL = "https://blueroute-api-production-e23a.up.railway.app/api/track";
 
 
 /* =========================================================
@@ -15,7 +15,11 @@ const API_URL = "https://blueroute-api-production-3ce5.up.railway.app/api/track"
 function correctApiDomain(url){
 
 if(url.includes("aaef.up.railway.app")){
-return url.replace("aaef.up.railway.app","3ce5.up.railway.app");
+return url.replace("aaef.up.railway.app","e23a.up.railway.app");
+}
+
+if(url.includes("3ce5.up.railway.app")){
+return url.replace("3ce5.up.railway.app","e23a.up.railway.app");
 }
 
 return url;
@@ -221,7 +225,7 @@ return fetch(url);
 
 
   // ==========================================
-  // RESTORED SCROLL REVEAL (FIX FOR MISSING SERVICES & IMAGES)
+  // RESTORED SCROLL REVEAL
   // ==========================================
   const revealItems = document.querySelectorAll(".card, .gallery img");
 
@@ -238,7 +242,7 @@ return fetch(url);
   }
 
   window.addEventListener("scroll", revealOnScroll);
-  revealOnScroll(); // run once on load
+  revealOnScroll();
 
 });
 
@@ -254,6 +258,7 @@ window.addEventListener("scroll",function(){
   const bar=document.getElementById("progress-bar");
   if(bar) bar.style.width=percent+"%";
 });
+
 
 // ==========================================
 // QUOTE FORM SUBMISSION
