@@ -69,6 +69,7 @@ const data = await response.json();
 if (data.success) {
 alert("Shipment created. Tracking: " + data.trackingNumber);
 loadShipments();
+loadDashboard();
 }
 
 } catch (err) {
@@ -78,6 +79,7 @@ alert("Server error");
 });
 
 }
+
 
 /* =================================
 LOAD SHIPMENTS
@@ -106,8 +108,11 @@ data.forEach(function (s) {
 const row = document.createElement("tr");
 
 row.innerHTML = `
-
-<td>${s.tracking}</td> <td>${s.origin}</td> <td>${s.destination}</td> <td>${s.status}</td> `;
+<td>${s.tracking}</td>
+<td>${s.origin}</td>
+<td>${s.destination}</td>
+<td>${s.status}</td>
+`;
 
 row.onclick=function(){
 
@@ -126,6 +131,88 @@ console.error("Failed loading shipments", err);
 }
 
 }
+
+
+/* =================================
+LOAD DASHBOARD
+================================= */
+
+async function loadDashboard(){
+
+const token = sessionStorage.getItem("br_token");
+
+try{
+
+const response = await fetch(API + "/api/admin/shipments",{
+headers:{Authorization: token}
+});
+
+const data = await response.json();
+
+/* ===== STATS ===== */
+
+let total = data.length;
+let transit = 0;
+let delivered = 0;
+
+data.forEach(s=>{
+
+const status = s.status.toLowerCase();
+
+if(status.includes("transit")) transit++;
+
+if(status.includes("delivered")) delivered++;
+
+});
+
+const statTotal = document.getElementById("statTotal");
+const statTransit = document.getElementById("statTransit");
+const statDelivered = document.getElementById("statDelivered");
+
+if(statTotal) statTotal.innerText = total;
+if(statTransit) statTransit.innerText = transit;
+if(statDelivered) statDelivered.innerText = delivered;
+
+
+/* ===== RECENT TABLE ===== */
+
+const dashboardTable = document.getElementById("dashboardTable");
+
+if(!dashboardTable) return;
+
+dashboardTable.innerHTML="";
+
+data.slice(0,5).forEach(s=>{
+
+const row = document.createElement("tr");
+
+row.innerHTML=`
+<td>${s.tracking}</td>
+<td>${s.origin}</td>
+<td>${s.destination}</td>
+<td>${s.status}</td>
+`;
+
+row.onclick=function(){
+
+document.getElementById("updateTracking").value=s.tracking;
+
+showSection("update");
+
+};
+
+dashboardTable.appendChild(row);
+
+});
+
+}catch(err){
+
+console.error("Dashboard load failed",err);
+
+}
+
+}
+
 
 /* =================================
 UPDATE SHIPMENT
@@ -161,11 +248,13 @@ const data = await response.json();
 if(data.success){
 alert("Shipment updated");
 loadShipments();
+loadDashboard();
 }else{
 alert("Update failed");
 }
 
 }
+
 
 /* =================================
 PAGE LOAD
@@ -174,6 +263,7 @@ PAGE LOAD
 window.onload=function(){
 
 loadShipments();
+loadDashboard();
 
 /* AUTO FILL TRACKING FROM URL */
 

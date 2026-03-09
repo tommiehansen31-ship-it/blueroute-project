@@ -1,188 +1,357 @@
-<!DOCTYPE html> 
-<html> 
-<head> 
-<meta charset="UTF-8"> 
-<title>BlueRoute Admin Console</title> 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BlueRoute Operations Console</title>
 
-<style> 
-body{ 
-font-family: Arial; 
-margin:0; 
-background:#f5f7fb; 
-} 
+<link rel="stylesheet" href="admin-console.css">
 
-header{ 
-background:#0a3d91; 
-color:white; 
-padding:15px; 
-font-size:20px; 
-display:flex; 
-justify-content:space-between; 
-align-items:center; 
-} 
+<script src="auth.js"></script>
 
-nav{ 
-background:#ffffff; 
-padding:10px; 
-border-bottom:1px solid #ddd; 
-} 
+<style>
 
-nav button{ 
-margin-right:10px; 
-padding:8px 12px; 
-cursor:pointer; 
-} 
+/* ============================= */
+/* LAYOUT */
+/* ============================= */
 
-section{ 
-padding:20px; 
-display:none; 
-} 
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#f4f7fb;
+display:flex;
+height:100vh;
+}
 
-section.active{ 
-display:block; 
-} 
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
 
-input, textarea, select{ 
-width:100%; 
-padding:10px; 
-margin-bottom:12px; 
-border:1px solid #ccc; 
-} 
+.sidebar{
+width:240px;
+background:#0a3d91;
+color:white;
+display:flex;
+flex-direction:column;
+padding:20px;
+}
 
-table{ 
-width:100%; 
-border-collapse:collapse; 
-} 
+.sidebar h2{
+margin-bottom:30px;
+font-size:20px;
+}
 
-table th, table td{ 
-border:1px solid #ddd; 
-padding:8px; 
-} 
+.sidebar button{
+background:none;
+border:none;
+color:white;
+text-align:left;
+padding:12px;
+cursor:pointer;
+border-radius:4px;
+margin-bottom:5px;
+}
 
-table tr:hover{ 
-background:#f1f4ff; 
-cursor:pointer; 
-} 
+.sidebar button:hover{
+background:rgba(255,255,255,0.15);
+}
 
-button{ 
-padding:10px 14px; 
-cursor:pointer; 
-} 
-</style> 
-</head> 
+/* ============================= */
+/* MAIN AREA */
+/* ============================= */
 
-<body> 
+.main{
+flex:1;
+display:flex;
+flex-direction:column;
+}
 
-<script src="auth.js"></script> 
+header{
+background:white;
+padding:15px 20px;
+border-bottom:1px solid #ddd;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-<header> 
-BlueRoute Admin Console 
+.logout-btn{
+background:#dc3545;
+color:white;
+border:none;
+padding:8px 12px;
+cursor:pointer;
+border-radius:4px;
+}
 
-<button onclick="logout()" style="background:#dc3545;color:white;border:none;padding:8px 12px;cursor:pointer;"> 
-Logout 
-</button> 
+/* ============================= */
+/* CONTENT */
+/* ============================= */
 
-</header> 
+.content{
+padding:25px;
+overflow:auto;
+flex:1;
+}
 
-<nav> 
-<button onclick="openAdminTab('create')">Create Shipment</button>
-<button onclick="openAdminTab('list')">All Shipments</button>
-<button onclick="openAdminTab('update')">Update Status</button>
-</nav> 
+section{
+display:none;
+}
 
-<!-- CREATE SHIPMENT --> 
+section.active{
+display:block;
+}
 
-<section id="create" class="active"> 
+/* ============================= */
+/* DASHBOARD CARDS */
+/* ============================= */
 
-<h2>Create Shipment</h2> 
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-bottom:30px;
+}
 
-<form id="createShipmentForm"> 
+.card{
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
 
-<h3>Sender Information</h3> 
-<input id="senderName" placeholder="Sender Name"> 
-<input id="senderAddress" placeholder="Sender Address"> 
-<input id="senderPhone" placeholder="Sender Phone"> 
-<input id="senderEmail" placeholder="Sender Email"> 
+.card h3{
+margin:0;
+font-size:14px;
+color:#555;
+}
 
-<h3>Receiver Information</h3> 
-<input id="receiverName" placeholder="Receiver Name"> 
-<input id="receiverAddress" placeholder="Receiver Address"> 
-<input id="receiverPhone" placeholder="Receiver Phone"> 
-<input id="receiverEmail" placeholder="Receiver Email"> 
+.card p{
+font-size:26px;
+margin-top:10px;
+color:#0a3d91;
+}
 
-<h3>Shipment Route</h3> 
-<input id="origin" placeholder="Origin"> 
-<input id="destination" placeholder="Destination"> 
+/* ============================= */
+/* TABLE */
+/* ============================= */
 
-<h3>Shipment Details</h3> 
-<input id="shipmentName" placeholder="Shipment Name / Description"> 
-<input id="weight" placeholder="Weight (kg)"> 
-<input id="itemsSent" placeholder="Items Sent"> 
-<input id="boxCount" placeholder="Number of Boxes"> 
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
 
-<label>Package Sent Date</label> 
-<input type="date" id="sentDate"> 
+th, td{
+padding:10px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
 
-<label>Estimated Delivery Date</label> 
-<input type="date" id="estimatedDelivery"> 
+tr:hover{
+background:#f1f4ff;
+cursor:pointer;
+}
 
-<textarea id="remarks" placeholder="Remarks"></textarea> 
+/* ============================= */
+/* FORMS */
+/* ============================= */
 
-<button type="submit">Create Shipment</button> 
+input, textarea, select{
+width:100%;
+padding:10px;
+margin-bottom:12px;
+border:1px solid #ccc;
+border-radius:4px;
+}
 
-</form> 
+button.primary{
+background:#0a3d91;
+color:white;
+border:none;
+padding:10px 15px;
+cursor:pointer;
+border-radius:4px;
+}
 
-<div id="result"></div> 
+</style>
 
-</section> 
+</head>
 
-<!-- SHIPMENT LIST --> 
+<body>
 
-<section id="list"> 
+<!-- SIDEBAR -->
 
-<h2>Shipment List</h2> 
+<div class="sidebar">
 
-<table> 
+<h2>BlueRoute Ops</h2>
 
-<thead> 
-<tr> 
-<th>Tracking</th> 
-<th>Origin</th> 
-<th>Destination</th> 
-<th>Status</th> 
-</tr> 
-</thead> 
+<button onclick="showSection('dashboard')">Dashboard</button>
 
-<tbody id="shipmentTable"></tbody> 
+<button onclick="showSection('create')">Create Shipment</button>
 
-</table> 
+<button onclick="showSection('list')">All Shipments</button>
 
-</section> 
+<button onclick="showSection('update')">Update Shipment</button>
 
-<!-- UPDATE SHIPMENT --> 
+</div>
 
-<section id="update"> 
+<!-- MAIN -->
 
-<h2>Update Shipment Status</h2> 
+<div class="main">
 
-<input id="updateTracking" placeholder="Tracking Number"> 
+<header>
 
-<select id="statusSelect"> 
-<option>Shipment Created</option> 
-<option>Dispatched</option> 
-<option>In Transit</option> 
-<option>Customs</option> 
-<option>Out for Delivery</option> 
-<option>Delivered</option> 
-</select> 
+<h3>Operations Dashboard</h3>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="active">
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Shipments</h3>
+<p id="statTotal">0</p>
+</div>
+
+<div class="card">
+<h3>In Transit</h3>
+<p id="statTransit">0</p>
+</div>
+
+<div class="card">
+<h3>Delivered</h3>
+<p id="statDelivered">0</p>
+</div>
+
+</div>
+
+<h3>Recent Shipments</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>Tracking</th>
+<th>Origin</th>
+<th>Destination</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="dashboardTable"></tbody>
+
+</table>
+
+</section>
+
+<!-- CREATE -->
+
+<section id="create">
+
+<h2>Create Shipment</h2>
+
+<form id="createShipmentForm">
+
+<h3>Sender Information</h3>
+
+<input id="senderName" placeholder="Sender Name">
+<input id="senderAddress" placeholder="Sender Address">
+<input id="senderPhone" placeholder="Sender Phone">
+<input id="senderEmail" placeholder="Sender Email">
+
+<h3>Receiver Information</h3>
+
+<input id="receiverName" placeholder="Receiver Name">
+<input id="receiverAddress" placeholder="Receiver Address">
+<input id="receiverPhone" placeholder="Receiver Phone">
+<input id="receiverEmail" placeholder="Receiver Email">
+
+<h3>Shipment Route</h3>
+
+<input id="origin" placeholder="Origin">
+<input id="destination" placeholder="Destination">
+
+<h3>Shipment Details</h3>
+
+<input id="shipmentName" placeholder="Shipment Name / Description">
+<input id="weight" placeholder="Weight (kg)">
+<input id="itemsSent" placeholder="Items Sent">
+<input id="boxCount" placeholder="Number of Boxes">
+
+<label>Package Sent Date</label>
+<input type="date" id="sentDate">
+
+<label>Estimated Delivery Date</label>
+<input type="date" id="estimatedDelivery">
+
+<textarea id="remarks" placeholder="Remarks"></textarea>
+
+<button class="primary" type="submit">Create Shipment</button>
+
+</form>
+
+<div id="result"></div>
+
+</section>
+
+<!-- LIST -->
+
+<section id="list">
+
+<h2>Shipment List</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Tracking</th>
+<th>Origin</th>
+<th>Destination</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="shipmentTable"></tbody>
+
+</table>
+
+</section>
+
+<!-- UPDATE -->
+
+<section id="update">
+
+<h2>Update Shipment Status</h2>
+
+<input id="updateTracking" placeholder="Tracking Number">
+
+<select id="statusSelect">
+<option>Shipment Created</option>
+<option>Dispatched</option>
+<option>In Transit</option>
+<option>Customs</option>
+<option>Out for Delivery</option>
+<option>Delivered</option>
+</select>
 
 <textarea id="updateRemarks" placeholder="Remarks"></textarea>
 
-<button onclick="updateShipment()">Update</button> 
+<button class="primary" onclick="updateShipment()">Update</button>
 
-</section> 
+</section>
 
-<script src="admin-console.js"></script> 
+</div>
+
+</div>
+
+<script src="admin-console.js"></script>
 
 <script>
 
@@ -196,28 +365,7 @@ document.getElementById(section).classList.add("active")
 
 }
 
-/* =================================
-OPEN ADMIN TABS
-================================= */
+</script>
 
-function openAdminTab(section){
-
-window.open("admin-console.html?view="+section,"_blank")
-
-}
-
-/* =================================
-LOAD VIEW FROM URL
-================================= */
-
-const params = new URLSearchParams(window.location.search)
-const view = params.get("view")
-
-if(view){
-showSection(view)
-}
-
-</script> 
-
-</body> 
+</body>
 </html>
