@@ -117,7 +117,23 @@ row.innerHTML = `
 <td>${s.origin}</td>
 <td>${s.destination}</td>
 <td>${s.status}</td>
+<td>
+<button onclick="downloadWaybill('${s.tracking}')">
+Waybill
+</button>
+</td>
 `;
+
+function downloadWaybill(tracking){
+
+const token = sessionStorage.getItem("br_token");
+
+window.open(
+API + "/api/admin/waybill/" + tracking + "?token=" + token,
+"_blank"
+);
+
+}
 
 row.onclick=function(){
 window.open("shipment.html?tracking="+s.tracking,"_blank");
