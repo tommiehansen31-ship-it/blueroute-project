@@ -126,7 +126,17 @@ Waybill
 
 function downloadWaybill(tracking){
 
-window.location.href = API + "/api/waybill/" + tracking;
+const link = document.createElement("a");
+
+link.href = API + "/api/waybill/" + tracking;
+
+link.download = tracking + "-waybill.pdf";
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
 
 }
 
