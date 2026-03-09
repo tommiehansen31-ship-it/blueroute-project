@@ -126,12 +126,7 @@ Waybill
 
 function downloadWaybill(tracking){
 
-const token = sessionStorage.getItem("br_token");
-
-window.open(
-API + "/api/admin/waybill/" + tracking + "?token=" + token,
-"_blank"
-);
+window.location.href = API + "/api/waybill/" + tracking;
 
 }
 
