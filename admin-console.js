@@ -1,4 +1,4 @@
-const API = "https://blueroute-api-production-e23a.up.railway.app";
+let currentPage = 1;
 
 /* =================================
 CREATE SHIPMENT
@@ -70,7 +70,7 @@ const data = await response.json();
 
 if (data.success) {
 alert("Shipment created. Tracking: " + data.trackingNumber);
-loadShipments();
+loadShipments(currentPage);
 loadDashboard();
 }
 
@@ -86,13 +86,17 @@ alert("Server error");
 LOAD SHIPMENTS
 ================================= */
 
-async function loadShipments() {
+async function loadShipments(page = 1) {
+
+if(page < 1) page = 1;
+
+currentPage = page;
 
 const token = sessionStorage.getItem("br_token");
 
 try {
 
-const response = await fetch(API + "/api/admin/shipments", {
+const response = await fetch(API + "/api/admin/shipments?page=" + currentPage, {
 headers:{Authorization: token}
 });
 
@@ -332,7 +336,7 @@ const data = await response.json();
 
 if(data.success){
 alert("Shipment updated");
-loadShipments();
+loadShipments(currentPage);
 loadDashboard();
 }else{
 alert("Update failed");
@@ -347,7 +351,7 @@ PAGE LOAD
 
 window.onload=function(){
 
-loadShipments();
+loadShipments(1);
 loadDashboard();
 
 /* AUTO FILL TRACKING FROM URL */
