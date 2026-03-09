@@ -1,12 +1,6 @@
 const API = "https://blueroute-api-production-e23a.up.railway.app";
 
 /* =================================
-PAGINATION STATE
-================================= */
-
-let currentPage = 1;
-
-/* =================================
 CREATE SHIPMENT
 ================================= */
 
@@ -76,7 +70,7 @@ const data = await response.json();
 
 if (data.success) {
 alert("Shipment created. Tracking: " + data.trackingNumber);
-loadShipments(1);
+loadShipments();
 loadDashboard();
 }
 
@@ -89,27 +83,16 @@ alert("Server error");
 }
 
 /* =================================
-LOAD SHIPMENTS (PAGINATION + SEARCH)
+LOAD SHIPMENTS
 ================================= */
 
-async function loadShipments(page = 1) {
-
-currentPage = page;
+async function loadShipments() {
 
 const token = sessionStorage.getItem("br_token");
 
-const searchInput = document.getElementById("shipmentSearch");
-const searchQuery = searchInput ? searchInput.value.trim() : "";
-
 try {
 
-let url = API + "/api/admin/shipments?page=" + page;
-
-if (searchQuery) {
-url += "&search=" + encodeURIComponent(searchQuery);
-}
-
-const response = await fetch(url, {
+const response = await fetch(API + "/api/admin/shipments", {
 headers:{Authorization: token}
 });
 
@@ -186,13 +169,19 @@ const status = s.status.toLowerCase();
 if(status.includes("transit")) transit++;
 if(status.includes("delivered")) delivered++;
 
+/* COUNT ORIGINS */
+
 if(s.origin){
 originCount[s.origin] = (originCount[s.origin] || 0) + 1;
 }
 
+/* COUNT DESTINATIONS */
+
 if(s.destination){
 destinationCount[s.destination] = (destinationCount[s.destination] || 0) + 1;
 }
+
+/* SHIPMENTS TODAY (based on tracking timestamp if available) */
 
 if(s.tracking && s.tracking.startsWith("BR")){
 const timestamp = parseInt(s.tracking.replace("BR","").substring(0,13));
@@ -204,6 +193,8 @@ if(shipDate === todayDate) today++;
 
 });
 
+/* FIND TOP ORIGIN */
+
 let topOrigin = "-";
 let topOriginCount = 0;
 
@@ -214,6 +205,8 @@ topOriginCount = originCount[o];
 }
 }
 
+/* FIND TOP DESTINATION */
+
 let topDestination = "-";
 let topDestinationCount = 0;
 
@@ -223,6 +216,8 @@ topDestination = d;
 topDestinationCount = destinationCount[d];
 }
 }
+
+/* UPDATE DASHBOARD */
 
 const statTotal = document.getElementById("statTotal");
 const statTransit = document.getElementById("statTransit");
@@ -237,6 +232,9 @@ if(statDelivered) statDelivered.innerText = delivered;
 if(statToday) statToday.innerText = today;
 if(statOrigin) statOrigin.innerText = topOrigin;
 if(statDestination) statDestination.innerText = topDestination;
+
+
+/* ===== RECENT TABLE ===== */
 
 const dashboardTable = document.getElementById("dashboardTable");
 
@@ -282,7 +280,21 @@ SEARCH SHIPMENTS
 
 function searchShipments(){
 
-loadShipments(1);
+const input = document.getElementById("shipmentSearch");
+
+if(!input) return;
+
+const filter = input.value.toLowerCase();
+
+const rows = document.querySelectorAll("#shipmentTable tr");
+
+rows.forEach(row=>{
+
+const text=row.innerText.toLowerCase();
+
+row.style.display = text.includes(filter) ? "" : "none";
+
+});
 
 }
 
@@ -320,7 +332,7 @@ const data = await response.json();
 
 if(data.success){
 alert("Shipment updated");
-loadShipments(currentPage);
+loadShipments();
 loadDashboard();
 }else{
 alert("Update failed");
@@ -335,8 +347,10 @@ PAGE LOAD
 
 window.onload=function(){
 
-loadShipments(1);
+loadShipments();
 loadDashboard();
+
+/* AUTO FILL TRACKING FROM URL */
 
 const params=new URLSearchParams(window.location.search);
 const tracking=params.get("tracking");
