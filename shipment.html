@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>BlueRoute Shipment Profile</title>
+
+<script src="auth.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#f4f7fb;
+}
+
+.topbar{
+background:#0a3d91;
+color:white;
+padding:18px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.container{
+padding:30px;
+max-width:1100px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:8px;
+margin-bottom:25px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card h3{
+margin-top:0;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.label{
+font-size:13px;
+color:#777;
+}
+
+.value{
+font-size:16px;
+margin-top:4px;
+}
+
+.timeline{
+border-left:3px solid #0a3d91;
+padding-left:15px;
+margin-top:10px;
+}
+
+.event{
+margin-bottom:18px;
+}
+
+.event strong{
+color:#0a3d91;
+}
+
+.event small{
+color:#777;
+}
+
+.logout-btn{
+background:#dc3545;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:4px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+<div>BlueRoute Shipment Profile</div>
+
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+</div>
+
+<div class="container">
+
+<!-- SHIPMENT SUMMARY -->
+
+<div class="card">
+
+<h3>Shipment Summary</h3>
+
+<div class="grid">
+
+<div>
+<div class="label">Tracking Number</div>
+<div class="value" id="trackingNumber"></div>
+</div>
+
+<div>
+<div class="label">Status</div>
+<div class="value" id="status"></div>
+</div>
+
+<div>
+<div class="label">Origin</div>
+<div class="value" id="origin"></div>
+</div>
+
+<div>
+<div class="label">Destination</div>
+<div class="value" id="destination"></div>
+</div>
+
+</div>
+
+</div>
+
+<!-- TIMELINE -->
+
+<div class="card">
+
+<h3>Shipment Timeline</h3>
+
+<div id="timeline" class="timeline"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const API="https://blueroute-api-production-e23a.up.railway.app";
+
+async function loadShipment(){
+
+const params=new URLSearchParams(window.location.search);
+const tracking=params.get("tracking");
+
+if(!tracking) return;
+
+try{
+
+const res=await fetch(API+"/api/track/"+tracking);
+
+const data=await res.json();
+
+if(!data.found){
+
+alert("Shipment not found");
+return;
+
+}
+
+const shipment=data.shipment;
+
+document.getElementById("trackingNumber").innerText=shipment.tracking_number;
+document.getElementById("status").innerText=shipment.status;
+document.getElementById("origin").innerText=shipment.origin;
+document.getElementById("destination").innerText=shipment.destination;
+
+const timeline=document.getElementById("timeline");
+
+timeline.innerHTML="";
+
+data.scan_history.forEach(scan=>{
+
+const div=document.createElement("div");
+
+div.className="event";
+
+div.innerHTML=`
+<strong>${scan.location}</strong><br>
+${scan.remark}<br>
+<small>${new Date(scan.scanned_at).toLocaleString()}</small>
+`;
+
+timeline.appendChild(div);
+
+});
+
+}catch(err){
+
+console.error("Shipment load error",err);
+
+}
+
+}
+
+window.onload=loadShipment;
+
+</script>
+
+</body>
+</html>

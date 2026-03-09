@@ -55,6 +55,20 @@ border-radius:6px;
 cursor:pointer;
 }
 
+.remove-btn{
+margin-left:10px;
+background:#ff4d4d;
+color:white;
+border:none;
+padding:10px 14px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.remove-btn:hover{
+opacity:.9;
+}
+
 </style>
 
 </head>
@@ -140,11 +154,23 @@ card.innerHTML=`
 
 <h4>${tracking}</h4>
 
+<div class="status" id="status-${tracking}">
+Checking status...
+</div>
+
+<br>
+
 <a href="tracking.html?track=${tracking}" class="btn">Track Shipment</a>
+
+<button class="remove-btn" onclick="removeShipment('${tracking}')">
+Remove
+</button>
 
 `;
 
 container.appendChild(card);
+
+loadShipmentStatus(tracking);
 
 });
 
@@ -170,7 +196,51 @@ loadShipments();
 
 }
 
+function removeShipment(tracking){
+
+let shipments=JSON.parse(localStorage.getItem("brx_shipments") || "[]");
+
+shipments=shipments.filter(t=>t!==tracking);
+
+localStorage.setItem("brx_shipments",JSON.stringify(shipments));
+
 loadShipments();
+
+}
+
+loadShipments();
+
+async function loadShipmentStatus(tracking){
+
+try{
+
+const API="https://blueroute-api-production-e23a.up.railway.app";
+
+const res=await fetch(API+"/api/track/"+tracking);
+
+const data=await res.json();
+
+const statusBox=document.getElementById("status-"+tracking);
+
+if(!statusBox)return;
+
+if(!data.found){
+
+statusBox.innerHTML="Shipment not found";
+
+return;
+
+}
+
+statusBox.innerHTML="Status: "+data.shipment.status;
+
+}catch(err){
+
+console.error(err);
+
+}
+
+}
 
 
 /* =========================================================

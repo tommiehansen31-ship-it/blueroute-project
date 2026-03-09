@@ -1,3 +1,11 @@
+const API = "https://blueroute-api-production-e23a.up.railway.app";
+
+/* =================================
+PAGINATION STATE
+================================= */
+
+let currentPage = 1;
+
 /* =================================
 CREATE SHIPMENT
 ================================= */
@@ -68,7 +76,7 @@ const data = await response.json();
 
 if (data.success) {
 alert("Shipment created. Tracking: " + data.trackingNumber);
-loadShipments();
+loadShipments(1);
 loadDashboard();
 }
 
@@ -80,18 +88,28 @@ alert("Server error");
 
 }
 
-
 /* =================================
-LOAD SHIPMENTS
+LOAD SHIPMENTS (PAGINATION + SEARCH)
 ================================= */
 
-async function loadShipments() {
+async function loadShipments(page = 1) {
+
+currentPage = page;
 
 const token = sessionStorage.getItem("br_token");
 
+const searchInput = document.getElementById("shipmentSearch");
+const searchQuery = searchInput ? searchInput.value.trim() : "";
+
 try {
 
-const response = await fetch(API + "/api/admin/shipments", {
+let url = API + "/api/admin/shipments?page=" + page;
+
+if (searchQuery) {
+url += "&search=" + encodeURIComponent(searchQuery);
+}
+
+const response = await fetch(url, {
 headers:{Authorization: token}
 });
 
@@ -115,9 +133,7 @@ row.innerHTML = `
 `;
 
 row.onclick=function(){
-
-window.open("admin-console.html?tracking="+s.tracking,"_blank");
-
+window.open("shipment.html?tracking="+s.tracking,"_blank");
 };
 
 tableBody.appendChild(row);
@@ -149,32 +165,78 @@ headers:{Authorization: token}
 
 const data = await response.json();
 
-/* ===== STATS ===== */
+/* ===== BASIC STATS ===== */
 
 let total = data.length;
 let transit = 0;
 let delivered = 0;
+
+/* ===== NEW ANALYTICS ===== */
+
+let today = 0;
+let originCount = {};
+let destinationCount = {};
+
+const todayDate = new Date().toISOString().split("T")[0];
 
 data.forEach(s=>{
 
 const status = s.status.toLowerCase();
 
 if(status.includes("transit")) transit++;
-
 if(status.includes("delivered")) delivered++;
 
+if(s.origin){
+originCount[s.origin] = (originCount[s.origin] || 0) + 1;
+}
+
+if(s.destination){
+destinationCount[s.destination] = (destinationCount[s.destination] || 0) + 1;
+}
+
+if(s.tracking && s.tracking.startsWith("BR")){
+const timestamp = parseInt(s.tracking.replace("BR","").substring(0,13));
+if(!isNaN(timestamp)){
+const shipDate = new Date(timestamp).toISOString().split("T")[0];
+if(shipDate === todayDate) today++;
+}
+}
+
 });
+
+let topOrigin = "-";
+let topOriginCount = 0;
+
+for(const o in originCount){
+if(originCount[o] > topOriginCount){
+topOrigin = o;
+topOriginCount = originCount[o];
+}
+}
+
+let topDestination = "-";
+let topDestinationCount = 0;
+
+for(const d in destinationCount){
+if(destinationCount[d] > topDestinationCount){
+topDestination = d;
+topDestinationCount = destinationCount[d];
+}
+}
 
 const statTotal = document.getElementById("statTotal");
 const statTransit = document.getElementById("statTransit");
 const statDelivered = document.getElementById("statDelivered");
+const statToday = document.getElementById("statToday");
+const statOrigin = document.getElementById("statOrigin");
+const statDestination = document.getElementById("statDestination");
 
 if(statTotal) statTotal.innerText = total;
 if(statTransit) statTransit.innerText = transit;
 if(statDelivered) statDelivered.innerText = delivered;
-
-
-/* ===== RECENT TABLE ===== */
+if(statToday) statToday.innerText = today;
+if(statOrigin) statOrigin.innerText = topOrigin;
+if(statDestination) statDestination.innerText = topDestination;
 
 const dashboardTable = document.getElementById("dashboardTable");
 
@@ -215,6 +277,17 @@ console.error("Dashboard load failed",err);
 
 
 /* =================================
+SEARCH SHIPMENTS
+================================= */
+
+function searchShipments(){
+
+loadShipments(1);
+
+}
+
+
+/* =================================
 UPDATE SHIPMENT
 ================================= */
 
@@ -247,7 +320,7 @@ const data = await response.json();
 
 if(data.success){
 alert("Shipment updated");
-loadShipments();
+loadShipments(currentPage);
 loadDashboard();
 }else{
 alert("Update failed");
@@ -262,10 +335,8 @@ PAGE LOAD
 
 window.onload=function(){
 
-loadShipments();
+loadShipments(1);
 loadDashboard();
-
-/* AUTO FILL TRACKING FROM URL */
 
 const params=new URLSearchParams(window.location.search);
 const tracking=params.get("tracking");

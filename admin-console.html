@@ -173,29 +173,57 @@ cursor:pointer;
 border-radius:4px;
 }
 
+/* ============================= */
+/* SEARCH BAR */
+/* ============================= */
+
+#shipmentSearch{
+width:300px;
+padding:8px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:4px;
+}
+
+/* ============================= */
+/* PAGINATION */
+/* ============================= */
+
+.pagination{
+margin-top:15px;
+display:flex;
+gap:10px;
+}
+
+.pagination button{
+padding:8px 14px;
+border:none;
+background:#0a3d91;
+color:white;
+border-radius:4px;
+cursor:pointer;
+}
+
+.pagination button:hover{
+opacity:.9;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-
 <div class="sidebar">
 
 <h2>BlueRoute Ops</h2>
 
 <button onclick="showSection('dashboard')">Dashboard</button>
-
 <button onclick="showSection('create')">Create Shipment</button>
-
 <button onclick="showSection('list')">All Shipments</button>
-
 <button onclick="showSection('update')">Update Shipment</button>
 
 </div>
-
-<!-- MAIN -->
 
 <div class="main">
 
@@ -208,8 +236,6 @@ border-radius:4px;
 </header>
 
 <div class="content">
-
-<!-- DASHBOARD -->
 
 <section id="dashboard" class="active">
 
@@ -228,6 +254,21 @@ border-radius:4px;
 <div class="card">
 <h3>Delivered</h3>
 <p id="statDelivered">0</p>
+</div>
+
+<div class="card">
+<h3>Shipments Today</h3>
+<p id="statToday">0</p>
+</div>
+
+<div class="card">
+<h3>Top Origin</h3>
+<p id="statOrigin">-</p>
+</div>
+
+<div class="card">
+<h3>Top Destination</h3>
+<p id="statDestination">-</p>
 </div>
 
 </div>
@@ -250,8 +291,6 @@ border-radius:4px;
 </table>
 
 </section>
-
-<!-- CREATE -->
 
 <section id="create">
 
@@ -301,11 +340,11 @@ border-radius:4px;
 
 </section>
 
-<!-- LIST -->
-
 <section id="list">
 
 <h2>Shipment List</h2>
+
+<input id="shipmentSearch" placeholder="Search shipments..." onkeyup="searchShipments()">
 
 <table>
 
@@ -322,9 +361,17 @@ border-radius:4px;
 
 </table>
 
-</section>
+<!-- PAGINATION CONTROLS -->
 
-<!-- UPDATE -->
+<div class="pagination">
+
+<button onclick="loadShipments(currentPage-1)">Previous</button>
+
+<button onclick="loadShipments(currentPage+1)">Next</button>
+
+</div>
+
+</section>
 
 <section id="update">
 

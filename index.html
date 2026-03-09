@@ -231,6 +231,39 @@ padding:12px 20px;
 border-top:1px solid #eee;
 }
 
+/* ================================= */
+/* HOMEPAGE TRACKING WIDGET */
+/* STEP 5 ADDITION */
+/* ================================= */
+
+.hero-tracking-widget{
+margin-top:25px;
+display:flex;
+gap:10px;
+justify-content:center;
+}
+
+.hero-tracking-widget input{
+padding:12px;
+width:240px;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+.hero-tracking-widget button{
+background:#0077ff;
+color:white;
+border:none;
+padding:12px 16px;
+border-radius:6px;
+cursor:pointer;
+font-weight:600;
+}
+
+.hero-tracking-widget button:hover{
+opacity:.9;
+}
+
 }
 
 </style>
@@ -287,6 +320,16 @@ BlueRoute Express ensures every shipment travels safely, arrives on schedule, an
 <div class="hero-point">✔ Global Logistics & Freight Network</div>
 <div class="hero-point">✔ Secure Cargo Handling & Monitoring</div>
 <div class="hero-point">✔ Reliable International Delivery Operations</div>
+
+</div>
+
+<!-- HERO TRACKING WIDGET (STEP 5 ADDITION) -->
+
+<div class="hero-tracking-widget">
+
+<input id="heroTrackingInput" placeholder="Enter Tracking Number">
+
+<button onclick="heroTrack()">Track</button>
 
 </div>
 
