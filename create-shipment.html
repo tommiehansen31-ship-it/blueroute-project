@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>BlueRoute Create Shipment</title>
+
+<script src="auth.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#f4f7fb;
+}
+
+.topbar{
+background:#0a3d91;
+color:white;
+padding:18px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:30px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:8px;
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+input, textarea{
+width:100%;
+padding:10px;
+margin-bottom:12px;
+border:1px solid #ccc;
+border-radius:4px;
+}
+
+button{
+background:#0a3d91;
+color:white;
+border:none;
+padding:12px 16px;
+border-radius:4px;
+cursor:pointer;
+}
+
+button:hover{
+background:#082f70;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+<div>BlueRoute Create Shipment</div>
+<button onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Create Shipment</h2>
+
+<form id="createShipmentForm">
+
+<h3>Sender Information</h3>
+
+<input id="senderName" placeholder="Sender Name">
+<input id="senderAddress" placeholder="Sender Address">
+<input id="senderPhone" placeholder="Sender Phone">
+<input id="senderEmail" placeholder="Sender Email">
+
+<h3>Receiver Information</h3>
+
+<input id="receiverName" placeholder="Receiver Name">
+<input id="receiverAddress" placeholder="Receiver Address">
+<input id="receiverPhone" placeholder="Receiver Phone">
+<input id="receiverEmail" placeholder="Receiver Email">
+
+<h3>Shipment Route</h3>
+
+<input id="origin" placeholder="Origin">
+<input id="destination" placeholder="Destination">
+
+<h3>Shipment Details</h3>
+
+<input id="shipmentName" placeholder="Shipment Name / Description">
+<input id="weight" placeholder="Weight (kg)">
+<input id="itemsSent" placeholder="Items Sent">
+<input id="boxCount" placeholder="Number of Boxes">
+
+<label>Package Sent Date</label>
+<input type="date" id="sentDate">
+
+<label>Estimated Delivery Date</label>
+<input type="date" id="estimatedDelivery">
+
+<textarea id="remarks" placeholder="Remarks"></textarea>
+
+<button type="submit">Create Shipment</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+const form = document.getElementById("createShipmentForm");
+
+form.addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const token = sessionStorage.getItem("br_token");
+
+try{
+
+const response = await fetch(API + "/api/admin/create-shipment", {
+
+method: "POST",
+
+headers:{
+"Content-Type": "application/json",
+Authorization: token
+},
+
+body: JSON.stringify({
+
+senderName: senderName.value,
+senderAddress: senderAddress.value,
+senderPhone: senderPhone.value,
+senderEmail: senderEmail.value,
+
+receiverName: receiverName.value,
+receiverAddress: receiverAddress.value,
+receiverPhone: receiverPhone.value,
+receiverEmail: receiverEmail.value,
+
+origin: origin.value,
+destination: destination.value,
+
+shipmentName: shipmentName.value,
+weight: weight.value,
+itemsSent: itemsSent.value,
+boxCount: boxCount.value,
+
+sentDate: sentDate.value,
+estimatedDelivery: estimatedDelivery.value,
+remarks: remarks.value
+
+})
+
+});
+
+const data = await response.json();
+
+if(data.success){
+
+alert("Shipment Created. Tracking Number: " + data.trackingNumber);
+
+form.reset();
+
+}else{
+
+alert("Failed to create shipment");
+
+}
+
+}catch(err){
+
+console.error("Create shipment error", err);
+alert("Server error");
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
