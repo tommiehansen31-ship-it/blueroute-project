@@ -13,6 +13,45 @@ margin:0;
 padding:40px;
 }
 
+/* HEADER ALIGNMENT WITH HOMEPAGE */
+
+header{
+background:white;
+border-bottom:1px solid #eee;
+}
+
+.container.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+max-width:1100px;
+margin:auto;
+padding:15px;
+}
+
+.logo{
+font-size:22px;
+font-weight:700;
+color:#0077ff;
+letter-spacing:.4px;
+cursor:pointer;
+}
+
+#mainNav{
+display:flex;
+gap:25px;
+}
+
+#mainNav a{
+text-decoration:none;
+font-weight:600;
+color:#222;
+}
+
+#mainNav a:hover{
+color:#0077ff;
+}
+
 .container{
 max-width:800px;
 margin:auto;
@@ -121,6 +160,29 @@ cursor:pointer;
 </head>
 
 <body>
+
+<header>
+
+<div class="container nav">
+
+<a href="index.html"><div class="logo">BlueRoute Express</div></a>
+
+<nav id="mainNav">
+
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="services.html">Services</a>
+<a href="tracking.html">Tracking</a>
+<a href="contact.html" class="btn">Contact</a>
+<a href="portal.html">Customer Portal</a>
+
+</nav>
+
+</div>
+
+</header>
+
+<br>
 
 <div class="container">
 
