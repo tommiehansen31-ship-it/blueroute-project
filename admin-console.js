@@ -1,4 +1,4 @@
-const API = "https://blueroute-api-production-e23a.up.railway.app";
+window.API = window.API || "https://blueroute-api-production-e23a.up.railway.app";
 
 let currentPage = 1;
 
