@@ -127,52 +127,52 @@ form.addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-const token = sessionStorage.getItem("br_token");
-
 try{
+
+const data = {
+
+senderName: document.getElementById("senderName").value,
+senderAddress: document.getElementById("senderAddress").value,
+senderPhone: document.getElementById("senderPhone").value,
+senderEmail: document.getElementById("senderEmail").value,
+
+receiverName: document.getElementById("receiverName").value,
+receiverAddress: document.getElementById("receiverAddress").value,
+receiverPhone: document.getElementById("receiverPhone").value,
+receiverEmail: document.getElementById("receiverEmail").value,
+
+origin: document.getElementById("origin").value,
+destination: document.getElementById("destination").value,
+
+shipmentName: document.getElementById("shipmentName").value,
+weight: document.getElementById("weight").value,
+itemsSent: document.getElementById("itemsSent").value,
+boxCount: document.getElementById("boxCount").value,
+
+sentDate: document.getElementById("sentDate").value,
+estimatedDelivery: document.getElementById("estimatedDelivery").value,
+remarks: document.getElementById("remarks").value
+
+};
 
 const response = await fetch(API + "/api/admin/create-shipment", {
 
-method: "POST",
+method:"POST",
 
 headers:{
-"Content-Type": "application/json",
-Authorization: token
+"Content-Type":"application/json",
+"Authorization":"Bearer " + localStorage.getItem("adminToken")
 },
 
-body: JSON.stringify({
-
-senderName: senderName.value,
-senderAddress: senderAddress.value,
-senderPhone: senderPhone.value,
-senderEmail: senderEmail.value,
-
-receiverName: receiverName.value,
-receiverAddress: receiverAddress.value,
-receiverPhone: receiverPhone.value,
-receiverEmail: receiverEmail.value,
-
-origin: origin.value,
-destination: destination.value,
-
-shipmentName: shipmentName.value,
-weight: weight.value,
-itemsSent: itemsSent.value,
-boxCount: boxCount.value,
-
-sentDate: sentDate.value,
-estimatedDelivery: estimatedDelivery.value,
-remarks: remarks.value
-
-})
+body: JSON.stringify(data)
 
 });
 
-const data = await response.json();
+const result = await response.json();
 
-if(data.success){
+if(result.success){
 
-alert("Shipment Created. Tracking Number: " + data.trackingNumber);
+alert("Shipment Created. Tracking Number: " + result.trackingNumber);
 
 form.reset();
 
@@ -184,7 +184,8 @@ alert("Failed to create shipment");
 
 }catch(err){
 
-console.error("Create shipment error", err);
+console.error("Create shipment error:", err);
+
 alert("Server error");
 
 }
