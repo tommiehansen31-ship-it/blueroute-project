@@ -1,3 +1,5 @@
+const API = "https://blueroute-api-production-e23a.up.railway.app";
+
 let currentPage = 1;
 
 /* =================================
@@ -43,7 +45,7 @@ const response = await fetch(API + "/api/admin/create-shipment", {
 method: "POST",
 headers: {
 "Content-Type": "application/json",
-Authorization: token
+Authorization: "Bearer " + token
 },
 body: JSON.stringify({
 senderName,
@@ -96,8 +98,8 @@ const token = sessionStorage.getItem("br_token");
 
 try {
 
-const response = await fetch(API + "/api/admin/shipments?page=" + currentPage, {
-headers:{Authorization: token}
+const response = await fetch(API + "/api/admin/shipments?page=" + currentPage + "&limit=20", {
+headers:{Authorization: "Bearer " + token}
 });
 
 const data = await response.json();
@@ -150,8 +152,8 @@ const token = sessionStorage.getItem("br_token");
 
 try{
 
-const response = await fetch(API + "/api/admin/shipments",{
-headers:{Authorization: token}
+const response = await fetch(API + "/api/admin/shipments?page=1&limit=500",{
+headers:{Authorization: "Bearer " + token}
 });
 
 const data = await response.json();
@@ -259,14 +261,15 @@ row.innerHTML=`
 <td>${s.origin}</td>
 <td>${s.destination}</td>
 <td>${s.status}</td>
+<td>
+<button onclick="downloadWaybill('${s.tracking}'); event.stopPropagation();">
+Waybill
+</button>
+</td>
 `;
 
 row.onclick=function(){
-
-document.getElementById("updateTracking").value=s.tracking;
-
-showSection("update");
-
+window.open("shipment.html?tracking="+s.tracking,"_blank");
 };
 
 dashboardTable.appendChild(row);
@@ -325,7 +328,7 @@ method: "POST",
 
 headers:{
 "Content-Type":"application/json",
-Authorization: token
+Authorization: "Bearer " + token
 },
 
 body:JSON.stringify({

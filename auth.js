@@ -13,7 +13,7 @@ try{
 
 const response = await fetch(API + "/api/admin/session-check",{
 headers:{
-Authorization: token
+Authorization: "Bearer " + token
 }
 });
 
@@ -33,7 +33,15 @@ window.location.href="login.html";
 
 window.addEventListener("load", function(){
 
-if(window.location.pathname.includes("admin")){
+const protectedPages = [
+"admin-console.html",
+"create-shipment.html",
+"shipment.html"
+];
+
+const current = window.location.pathname.split("/").pop();
+
+if(protectedPages.includes(current)){
 verifyAdminSession();
 }
 
