@@ -6,6 +6,9 @@
 <title>BlueRoute Create Shipment</title>
 
 <script src="auth.js"></script>
+<script>
+verifyAdminSession();
+</script>
 
 <style>
 
@@ -161,7 +164,7 @@ method:"POST",
 
 headers:{
 "Content-Type":"application/json",
-"Authorization": sessionStorage.getItem("br_token")
+"Authorization": "Bearer " + sessionStorage.getItem("br_token")
 },
 
 body: JSON.stringify(data)
