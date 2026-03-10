@@ -161,7 +161,7 @@ method:"POST",
 
 headers:{
 "Content-Type":"application/json",
-"Authorization":"Bearer " + localStorage.getItem("adminToken")
+"Authorization":"Bearer " + sessionStorage.getItem("br_token")
 },
 
 body: JSON.stringify(data)
