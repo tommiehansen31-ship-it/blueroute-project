@@ -125,19 +125,8 @@ Waybill
 `;
 
 function downloadWaybill(tracking){
-
-const link = document.createElement("a");
-
-link.href = API + "/api/waybill/" + tracking;
-
-link.download = tracking + "-waybill.pdf";
-
-document.body.appendChild(link);
-
-link.click();
-
-document.body.removeChild(link);
-
+const url = API + "/api/waybill/" + tracking;
+window.open(url, "_blank");
 }
 
 row.onclick=function(){
