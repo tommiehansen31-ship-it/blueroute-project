@@ -107,6 +107,18 @@ cursor:pointer;
 
 <h3>Shipment Summary</h3>
 
+<button onclick="downloadWaybill()" style="
+background:#0a3d91;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:4px;
+cursor:pointer;
+margin-bottom:15px;
+">
+Download Waybill
+</button>
+
 <div class="grid">
 
 <div>
@@ -161,10 +173,8 @@ const res=await fetch(API+"/api/track/"+tracking);
 const data=await res.json();
 
 if(!data.found){
-
 alert("Shipment not found");
 return;
-
 }
 
 const shipment=data.shipment;
@@ -195,16 +205,29 @@ timeline.appendChild(div);
 });
 
 }catch(err){
-
 console.error("Shipment load error",err);
-
 }
 
 }
 
 window.onload=loadShipment;
 
-</script>
 
+/* DOWNLOAD WAYBILL */
+
+function downloadWaybill(){
+
+const params=new URLSearchParams(window.location.search);
+const tracking=params.get("tracking");
+
+if(!tracking) return;
+
+const url = API + "/api/waybill/" + tracking;
+
+window.open(url,"_blank");
+
+}
+
+</script>
 </body>
 </html>

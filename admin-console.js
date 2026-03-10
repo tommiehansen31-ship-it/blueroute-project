@@ -118,16 +118,11 @@ row.innerHTML = `
 <td>${s.destination}</td>
 <td>${s.status}</td>
 <td>
-<button onclick="downloadWaybill('${s.tracking}')">
+<button onclick="downloadWaybill('${s.tracking}'); event.stopPropagation();">
 Waybill
 </button>
 </td>
 `;
-
-function downloadWaybill(tracking){
-const url = API + "/api/waybill/" + tracking;
-window.open(url, "_blank");
-}
 
 row.onclick=function(){
 window.open("shipment.html?tracking="+s.tracking,"_blank");
@@ -144,7 +139,6 @@ console.error("Failed loading shipments", err);
 }
 
 }
-
 
 /* =================================
 LOAD DASHBOARD
@@ -381,3 +375,11 @@ showSection("update");
 }
 
 };
+
+function downloadWaybill(tracking){
+
+const url = API + "/api/waybill/" + tracking;
+
+window.open(url,"_blank");
+
+}
