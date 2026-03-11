@@ -186,7 +186,9 @@ if(!tracking)return;
 
 let shipments=JSON.parse(localStorage.getItem("brx_shipments") || "[]");
 
+if(!shipments.includes(tracking)){
 shipments.push(tracking);
+}
 
 localStorage.setItem("brx_shipments",JSON.stringify(shipments));
 

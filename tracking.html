@@ -296,10 +296,10 @@ const scans=data.scan_history;
 
 /* CURRENT LOCATION */
 
-let currentLocation=shipment.origin;
+let currentLocation = shipment.origin;
 
-if(scans.length){
-currentLocation=scans[0].location;
+if(scans && scans.length > 0){
+currentLocation = scans[0].location;
 }
 
 /* PROGRESS BAR */
