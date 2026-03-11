@@ -120,9 +120,15 @@ row.innerHTML = `
 <td>${s.destination}</td>
 <td>${s.status}</td>
 <td>
+
 <button onclick="downloadWaybill('${s.tracking}'); event.stopPropagation();">
 Waybill
 </button>
+
+<button onclick="deleteShipment('${s.tracking}'); event.stopPropagation();" style="margin-left:6px;color:red;">
+Delete
+</button>
+
 </td>
 `;
 
@@ -262,11 +268,16 @@ row.innerHTML=`
 <td>${s.destination}</td>
 <td>${s.status}</td>
 <td>
+
 <button onclick="downloadWaybill('${s.tracking}'); event.stopPropagation();">
 Waybill
 </button>
+
+<button onclick="deleteShipment('${s.tracking}'); event.stopPropagation();" style="margin-left:6px;color:red;">
+Delete
+</button>
+
 </td>
-`;
 
 row.onclick=function(){
 window.open("shipment.html?tracking="+s.tracking,"_blank");
@@ -384,5 +395,47 @@ function downloadWaybill(tracking){
 const url = API + "/api/waybill/" + tracking;
 
 window.open(url,"_blank");
+
+}
+
+async function deleteShipment(tracking){
+
+if(!confirm("Delete shipment " + tracking + "?")){
+return;
+}
+
+const token = sessionStorage.getItem("br_token");
+
+try{
+
+const res = await fetch(
+API + "/api/admin/delete-shipment/" + tracking,
+{
+method:"DELETE",
+headers:{
+Authorization: "Bearer " + token
+}
+});
+
+const data = await res.json();
+
+if(data.success){
+
+alert("Shipment deleted");
+
+loadShipments(currentPage);
+loadDashboard();
+
+}else{
+
+alert("Delete failed");
+
+}
+
+}catch(err){
+
+alert("Server error");
+
+}
 
 }
