@@ -278,6 +278,7 @@ Delete
 </button>
 
 </td>
+`;
 
 row.onclick=function(){
 window.open("shipment.html?tracking="+s.tracking,"_blank");
