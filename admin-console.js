@@ -1,3 +1,5 @@
+let dashboardChart = null;
+
 window.API = window.API || "https://blueroute-api-production-e23a.up.railway.app";
 
 let currentPage = 1;
@@ -114,23 +116,44 @@ data.forEach(function (s) {
 
 const row = document.createElement("tr");
 
-row.innerHTML = `
-<td>${s.tracking}</td>
-<td>${s.origin}</td>
-<td>${s.destination}</td>
-<td>${s.status}</td>
-<td>
+const tdTracking = document.createElement("td");
+tdTracking.textContent = s.tracking;
 
-<button onclick="downloadWaybill('${s.tracking}'); event.stopPropagation();">
-Waybill
-</button>
+const tdOrigin = document.createElement("td");
+tdOrigin.textContent = s.origin;
 
-<button onclick="deleteShipment('${s.tracking}'); event.stopPropagation();" style="margin-left:6px;color:red;">
-Delete
-</button>
+const tdDestination = document.createElement("td");
+tdDestination.textContent = s.destination;
 
-</td>
-`;
+const tdStatus = document.createElement("td");
+tdStatus.textContent = s.status;
+
+const tdActions = document.createElement("td");
+
+const waybillBtn = document.createElement("button");
+waybillBtn.textContent = "Waybill";
+waybillBtn.onclick = function(e){
+e.stopPropagation();
+downloadWaybill(s.tracking);
+};
+
+const deleteBtn = document.createElement("button");
+deleteBtn.textContent = "Delete";
+deleteBtn.style.marginLeft = "6px";
+deleteBtn.style.color = "red";
+deleteBtn.onclick = function(e){
+e.stopPropagation();
+deleteShipment(s.tracking);
+};
+
+tdActions.appendChild(waybillBtn);
+tdActions.appendChild(deleteBtn);
+
+row.appendChild(tdTracking);
+row.appendChild(tdOrigin);
+row.appendChild(tdDestination);
+row.appendChild(tdStatus);
+row.appendChild(tdActions);
 
 row.onclick=function(){
 window.open("shipment.html?tracking="+s.tracking,"_blank");
@@ -158,7 +181,7 @@ const token = sessionStorage.getItem("br_token");
 
 try{
 
-const response = await fetch(API + "/api/admin/shipments?page=1&limit=500",{
+const response = await fetch(API + "/api/admin/shipments?page=1&limit=100",{
 headers:{Authorization: "Bearer " + token}
 });
 
@@ -249,6 +272,37 @@ if(statToday) statToday.innerText = today;
 if(statOrigin) statOrigin.innerText = topOrigin;
 if(statDestination) statDestination.innerText = topDestination;
 
+/* ===== DASHBOARD ANALYTICS CHART ===== */
+
+const chartCanvas = document.getElementById("shipmentChart");
+
+if(chartCanvas){
+
+const ctx = chartCanvas.getContext("2d");
+
+if(dashboardChart){
+dashboardChart.destroy();
+}
+
+dashboardChart = new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Total","In Transit","Delivered","Today"],
+datasets:[{
+label:"Shipments",
+data:[total,transit,delivered,today]
+}]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{display:false}
+}
+}
+});
+
+}
+
 
 /* ===== RECENT TABLE ===== */
 
@@ -262,23 +316,44 @@ data.slice(0,5).forEach(s=>{
 
 const row = document.createElement("tr");
 
-row.innerHTML=`
-<td>${s.tracking}</td>
-<td>${s.origin}</td>
-<td>${s.destination}</td>
-<td>${s.status}</td>
-<td>
+const tdTracking = document.createElement("td");
+tdTracking.textContent = s.tracking;
 
-<button onclick="downloadWaybill('${s.tracking}'); event.stopPropagation();">
-Waybill
-</button>
+const tdOrigin = document.createElement("td");
+tdOrigin.textContent = s.origin;
 
-<button onclick="deleteShipment('${s.tracking}'); event.stopPropagation();" style="margin-left:6px;color:red;">
-Delete
-</button>
+const tdDestination = document.createElement("td");
+tdDestination.textContent = s.destination;
 
-</td>
-`;
+const tdStatus = document.createElement("td");
+tdStatus.textContent = s.status;
+
+const tdActions = document.createElement("td");
+
+const waybillBtn = document.createElement("button");
+waybillBtn.textContent = "Waybill";
+waybillBtn.onclick = function(e){
+e.stopPropagation();
+downloadWaybill(s.tracking);
+};
+
+const deleteBtn = document.createElement("button");
+deleteBtn.textContent = "Delete";
+deleteBtn.style.marginLeft = "6px";
+deleteBtn.style.color = "red";
+deleteBtn.onclick = function(e){
+e.stopPropagation();
+deleteShipment(s.tracking);
+};
+
+tdActions.appendChild(waybillBtn);
+tdActions.appendChild(deleteBtn);
+
+row.appendChild(tdTracking);
+row.appendChild(tdOrigin);
+row.appendChild(tdDestination);
+row.appendChild(tdStatus);
+row.appendChild(tdActions);
 
 row.onclick=function(){
 window.open("shipment.html?tracking="+s.tracking,"_blank");
@@ -288,14 +363,7 @@ dashboardTable.appendChild(row);
 
 });
 
-}catch(err){
-
-console.error("Dashboard load failed",err);
-
 }
-
-}
-
 
 /* =================================
 SEARCH SHIPMENTS

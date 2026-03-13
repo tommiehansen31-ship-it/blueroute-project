@@ -106,6 +106,29 @@ document.getElementById("error").innerText="Server error";
 
 });
 
+/* =========================================================
+LOGIN WITH ENTER KEY
+========================================================= */
+
+/* =========================================================
+LOGIN WITH ENTER KEY (ENTERPRISE RELIABLE VERSION)
+========================================================= */
+
+document.addEventListener("keydown", function(e){
+
+if(e.key === "Enter"){
+
+const username = document.getElementById("username").value.trim();
+const password = document.getElementById("password").value.trim();
+
+if(username && password){
+document.getElementById("loginBtn").click();
+}
+
+}
+
+});
+
 </script>
 
 </body>

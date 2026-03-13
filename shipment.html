@@ -195,14 +195,26 @@ timeline.innerHTML="";
 data.scan_history.forEach(scan=>{
 
 const div=document.createElement("div");
-
 div.className="event";
 
-div.innerHTML=`
-<strong>${scan.location}</strong><br>
-${scan.remark}<br>
-<small>${new Date(scan.scanned_at).toLocaleString()}</small>
-`;
+const strong = document.createElement("strong");
+strong.textContent = scan.location;
+
+const br = document.createElement("br");
+
+const remark = document.createElement("span");
+remark.textContent = scan.remark;
+
+const br2 = document.createElement("br");
+
+const time = document.createElement("small");
+time.textContent = new Date(scan.scanned_at).toLocaleString();
+
+div.appendChild(strong);
+div.appendChild(br);
+div.appendChild(remark);
+div.appendChild(br2);
+div.appendChild(time);
 
 timeline.appendChild(div);
 

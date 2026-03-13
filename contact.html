@@ -34,7 +34,7 @@
 
     <p><strong>Philippines Phone Number:</strong> +63 966 456 9947</p>
 
-    <form>
+    <form id="contactForm">
       <input type="text" placeholder="Full Name" required>
       <input type="email" placeholder="Email Address" required>
       <textarea placeholder="Your Message" rows="6"></textarea>
@@ -49,6 +49,29 @@
 </footer>
 
 <script src="js/script.js"></script>
+
+<script>
+
+document.getElementById("contactForm").addEventListener("submit", function(e){
+
+e.preventDefault();
+
+const name = document.querySelector("input[placeholder='Full Name']").value;
+const email = document.querySelector("input[placeholder='Email Address']").value;
+const message = document.querySelector("textarea").value;
+
+if(!name || !email || !message){
+alert("Please complete all fields.");
+return;
+}
+
+alert("Message sent successfully. Our team will contact you soon.");
+
+document.getElementById("contactForm").reset();
+
+});
+
+</script>
 
 </body>
 </html>

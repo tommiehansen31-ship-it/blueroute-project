@@ -150,23 +150,33 @@ const card=document.createElement("div");
 
 card.className="shipment-card";
 
-card.innerHTML=`
+const title = document.createElement("h4");
+title.textContent = tracking;
 
-<h4>${tracking}</h4>
+const status = document.createElement("div");
+status.className = "status";
+status.id = "status-" + tracking;
+status.textContent = "Checking status...";
 
-<div class="status" id="status-${tracking}">
-Checking status...
-</div>
+const br = document.createElement("br");
 
-<br>
+const link = document.createElement("a");
+link.href = "tracking.html?track=" + tracking;
+link.className = "btn";
+link.textContent = "Track Shipment";
 
-<a href="tracking.html?track=${tracking}" class="btn">Track Shipment</a>
+const removeBtn = document.createElement("button");
+removeBtn.className = "remove-btn";
+removeBtn.textContent = "Remove";
+removeBtn.onclick = function(){
+removeShipment(tracking);
+};
 
-<button class="remove-btn" onclick="removeShipment('${tracking}')">
-Remove
-</button>
-
-`;
+card.appendChild(title);
+card.appendChild(status);
+card.appendChild(br);
+card.appendChild(link);
+card.appendChild(removeBtn);
 
 container.appendChild(card);
 
@@ -228,13 +238,13 @@ if(!statusBox)return;
 
 if(!data.found){
 
-statusBox.innerHTML="Shipment not found";
+statusBox.textContent="Shipment not found";
 
 return;
 
 }
 
-statusBox.innerHTML="Status: "+data.shipment.status;
+statusBox.textContent = "Status: " + data.shipment.status;
 
 }catch(err){
 

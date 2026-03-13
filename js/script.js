@@ -124,15 +124,26 @@ return fetch(url);
       // ==============================
       let scanHTML = "";
 
-      if(scans && scans.length){
-        scans.forEach(scan=>{
-          scanHTML += `
-            <div class="scan-item">
-              <span>${scan.location} — ${scan.remark}</span>
-            </div>
-          `;
-        });
-      }
+if (scans && scans.length) {
+
+  const scanContainer = document.createElement("div");
+
+  scans.forEach(scan => {
+
+    const item = document.createElement("div");
+    item.className = "scan-item";
+
+    const span = document.createElement("span");
+    span.textContent = scan.location + " — " + scan.remark;
+
+    item.appendChild(span);
+    scanContainer.appendChild(item);
+
+  });
+
+  scanHTML = scanContainer.innerHTML;
+
+}
 
       result.innerHTML = `
         <div class="tracking-card">

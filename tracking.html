@@ -268,6 +268,7 @@ const steps=[
 "Shipment Created",
 "Dispatched",
 "In Transit",
+"Arrival",
 "Customs",
 "Out for Delivery",
 "Delivered"
@@ -287,7 +288,7 @@ const data=await res.json();
 const result=document.getElementById("result");
 
 if(!data.found){
-result.innerHTML="<p>Shipment not found</p>";
+result.textContent="Shipment not found";
 return;
 }
 
@@ -325,17 +326,33 @@ progressHTML+='</div>';
 
 let timeline="";
 
+const timelineContainer = document.createElement("div");
+
 scans.forEach(scan=>{
 
-timeline+=`
-<div class="event">
-<div class="event-location">${scan.location}</div>
-<div>${scan.remark}</div>
-<div class="event-time">${new Date(scan.scanned_at).toLocaleString()}</div>
-</div>
-`;
+const event = document.createElement("div");
+event.className="event";
+
+const location = document.createElement("div");
+location.className="event-location";
+location.textContent = scan.location;
+
+const remark = document.createElement("div");
+remark.textContent = scan.remark;
+
+const time = document.createElement("div");
+time.className="event-time";
+time.textContent = new Date(scan.scanned_at).toLocaleString();
+
+event.appendChild(location);
+event.appendChild(remark);
+event.appendChild(time);
+
+timelineContainer.appendChild(event);
 
 });
+
+timeline = timelineContainer.innerHTML;
 
 result.innerHTML=`
 
@@ -403,9 +420,11 @@ async function geocodeLocation(place){
 
 try{
 
-const res=await fetch(
-"https://nominatim.openstreetmap.org/search?format=json&q="+encodeURIComponent(place)
-);
+const res=await fetch("https://nominatim.openstreetmap.org/search?format=json&q="+encodeURIComponent(place),{
+headers:{
+"User-Agent":"BlueRoute Logistics Tracking System"
+}
+})
 
 const data=await res.json();
 
@@ -452,14 +471,36 @@ L.marker(destinationCoords).addTo(map).bindPopup("Destination: "+destination);
 
 if(currentCoords){
 
-L.marker(currentCoords,{
+const movingMarker = L.marker(originCoords,{
 icon:L.icon({
 iconUrl:'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
 iconSize:[32,32]
 })
-})
-.addTo(map)
-.bindPopup("Current Location: "+current);
+}).addTo(map);
+
+movingMarker.bindPopup("Shipment in transit");
+
+let progress = 0;
+
+const interval = setInterval(()=>{
+
+progress += 0.02;
+
+const lat =
+originCoords[0] +
+(destinationCoords[0] - originCoords[0]) * progress;
+
+const lng =
+originCoords[1] +
+(destinationCoords[1] - originCoords[1]) * progress;
+
+movingMarker.setLatLng([lat,lng]);
+
+if(progress >= 1){
+clearInterval(interval);
+}
+
+},200);
 
 }
 
