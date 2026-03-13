@@ -363,6 +363,12 @@ dashboardTable.appendChild(row);
 
 });
 
+}catch(err){
+
+console.error("Dashboard load error", err);
+
+}
+
 }
 
 /* =================================
